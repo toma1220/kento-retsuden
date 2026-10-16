@@ -70,6 +70,66 @@
     background: #0e0b1f; color: var(--gold); border: 2px solid var(--line); padding: .25em .4em;
   }
   input#code:focus-visible { outline: 3px solid var(--blue); }
+  input#pname {
+    font: 700 clamp(14px, 2.4vw, 18px) var(--body); width: 9em; background: #0e0b1f; color: var(--ink);
+    border: 2px solid var(--line); padding: .3em .5em; -webkit-user-select: text; user-select: text;
+  }
+  input#pname:focus-visible { outline: 3px solid var(--blue); }
+  .btn.small { font-size: clamp(11px, 1.6vw, 14px); padding: .4em .8em; }
+
+  /* 待機画面 */
+  #m-lobby { width: min(100%, 640px); max-height: 94%; overflow-y: auto; align-items: stretch; gap: 8px; }
+  .lob-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+  .lob-title { font: clamp(14px, 2.4vw, 20px) var(--display); color: var(--gold); margin-right: auto; }
+  .lob-room { font-size: clamp(12px, 1.8vw, 15px); color: var(--muted); }
+  .lob-room b { font-family: var(--num); color: var(--gold); letter-spacing: .12em; font-size: 1.3em; }
+  .lob-rules { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 8px 10px; background: #0e0b1f; border: 1px solid var(--line);
+    font-size: clamp(11px, 1.7vw, 14px); }
+  .lob-label { font-weight: 700; color: var(--ink); }
+  .lob-label small { font-weight: 400; color: var(--muted); margin-left: .5em; }
+  .lob-rules select { font: inherit; background: #241d45; color: var(--ink); border: 1px solid var(--line); padding: .15em .3em; }
+  .lob-rules select:disabled { opacity: 1; color: var(--gold); border-color: transparent; background: transparent; appearance: none; -webkit-appearance: none; }
+  .lob-list { display: flex; flex-direction: column; gap: 4px; }
+  .lob-sec { font-size: clamp(11px, 1.6vw, 13px); color: var(--muted); margin: 4px 0 0; }
+  #m-lobby > * { min-width: 0; }
+  body.lobby #touch { display: none !important; }
+  .lob-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 6px 8px; min-width: 0; background: #1d1838; border: 1px solid var(--line); font-size: clamp(12px, 1.9vw, 15px); }
+  .lob-row.me { border-color: var(--blue); }
+  .lob-row.ask { border-color: var(--gold); background: #2e2610; }
+  .lob-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lob-tag { font-size: .78em; padding: 0 .4em; border: 1px solid currentColor; color: var(--muted); white-space: nowrap; }
+  .lob-tag.host { color: var(--gold); } .lob-tag.you { color: var(--blue); }
+  .lob-st { font-size: .85em; color: var(--muted); margin-left: auto; white-space: nowrap; }
+  .lob-row .btn { font-size: clamp(11px, 1.6vw, 13px); padding: .35em .7em; white-space: nowrap; }
+  .lob-me { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: clamp(12px, 1.8vw, 14px); color: var(--muted); }
+  #lob-name, #chat-in {
+    font: 700 clamp(13px, 2vw, 16px) var(--body); background: #0e0b1f; color: var(--ink); border: 2px solid var(--line);
+    padding: .3em .5em; -webkit-user-select: text; user-select: text; min-width: 0;
+  }
+  #lob-name { width: 8em; }
+  #lob-name:focus-visible, #chat-in:focus-visible { outline: 3px solid var(--blue); }
+  .lob-chat { display: flex; flex-direction: column; gap: 6px; }
+  .chat-quick .btn { font-size: clamp(10px, 1.4vw, 12px); padding: .3em .6em; border-bottom-width: 2px; }
+  .chat-log { height: 6em; overflow-y: auto; background: #0e0b1f; border: 1px solid var(--line); padding: 4px 8px;
+    font-size: clamp(12px, 1.8vw, 14px); line-height: 1.5; -webkit-user-select: text; user-select: text; }
+  .chat-log .who { font-weight: 700; color: var(--blue); margin-right: .5em; }
+  .chat-log .mine .who { color: var(--gold); }
+  .chat-log .sys { color: var(--muted); font-size: .9em; }
+  .chat-quick { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chat-send { display: flex; gap: 6px; }
+  .chat-send input { flex: 1; }
+  /* wide screens: members on the left, your name and the chat on the right */
+  @media (min-width: 700px) {
+    #m-lobby { display: grid; grid-template-columns: 1.1fr 1fr; width: min(100%, 880px); column-gap: 12px; align-content: start; }
+    #m-lobby .lob-head, #m-lobby .lob-rules { grid-column: 1 / -1; }
+    #m-lobby .lob-list { grid-column: 1; grid-row: 3 / span 2; align-self: start; }
+    #m-lobby .lob-me { grid-column: 2; grid-row: 3; }
+    #m-lobby .lob-chat { grid-column: 2; grid-row: 4; }
+    #m-lobby .lob-chat .lob-sec { display: none; }   /* the box itself says it is the chat */
+    #m-lobby #lob-msg { grid-column: 1 / -1; grid-row: 5; }
+    #m-lobby #b-leave { grid-column: 1 / -1; grid-row: 6; justify-self: center; }
+  }
+  .lob-empty { font-size: clamp(11px, 1.6vw, 13px); color: var(--muted); padding: 4px 8px; }
   #b-menu {
     position: absolute; left: .7%; top: 2.2%; z-index: 2; cursor: pointer; white-space: nowrap;
     font: 700 clamp(10px, 1.35vw, 13px) var(--body); color: var(--ink); background: #000b; border: 1px solid #fff5; padding: .35em .6em;
@@ -108,6 +168,9 @@
   #btns button[data-a="kick"] { background: #ff5a3c40; }
   #btns button[data-a="special"] { grid-column: span 2; justify-self: center; width: min(22vmin, 100px); background: #ffd23f40; font-size: min(3.8vmin, 17px); }
   #btns button.on, #stick.on { background-color: #ffffff55; }
+  #btns button[data-a="special"] { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+  #btns button small { font: 700 min(2.6vmin, 11px) var(--body); color: var(--gold); margin-top: 2px; }
+  #btns button.sa2 { background-color: #ffd23fcc; color: #1b1300; }
 
   body.touch #help { display: none; }
   body.touch { --reserve: 16px; }
@@ -143,6 +206,10 @@
     </div>
     <div class="panel" id="m-online" hidden>
       <div class="row">
+        <label class="note" for="pname">なまえ</label>
+        <input id="pname" maxlength="8" autocomplete="nickname" spellcheck="false" placeholder="8文字まで">
+      </div>
+      <div class="row">
         <button class="btn primary" id="b-create" type="button">ルームを作る</button>
       </div>
       <div class="row">
@@ -169,6 +236,43 @@
       </div>
       <p class="note" id="wait-msg">対戦相手を待っています…</p>
     </div>
+    <!-- 待機画面: everyone in the room; challenge someone who is free, or watch a match in progress -->
+    <div class="panel" id="m-lobby" hidden>
+      <div class="lob-head">
+        <span class="lob-title">待機画面</span>
+        <span class="lob-room">ルーム <b id="lob-code">----</b></span>
+        <button class="btn small" id="b-lcopy" type="button">コードをコピー</button>
+        <button class="btn small primary" id="b-lshare" type="button" hidden>招待リンク</button>
+      </div>
+      <div class="lob-rules" id="lob-rules">
+        <span class="lob-label">試合設定<small id="lob-rules-who"></small></span>
+        <label>本数 <select id="r-bo"><option value="1">1本先取</option><option value="2" selected>2本先取（BO3）</option><option value="3">3本先取（BO5）</option><option value="4">4本先取（BO7）</option></select></label>
+        <label>時間 <select id="r-time"><option value="30">30秒</option><option value="60">60秒</option><option value="99" selected>99秒</option><option value="0">無制限</option></select></label>
+        <label>体力 <select id="r-hp"><option value="50">50%</option><option value="75">75%</option><option value="100" selected>100%</option><option value="150">150%</option><option value="200">200%</option></select></label>
+      </div>
+      <div class="lob-me">
+        <label for="lob-name">あなたの名前</label>
+        <input id="lob-name" maxlength="8" autocomplete="nickname" spellcheck="false">
+        <button class="btn small" id="b-rename" type="button">変更</button>
+      </div>
+      <div class="lob-list" id="lob-list"></div>
+      <p class="note" id="lob-msg">ほかの人が入ってくるのを待っています…</p>
+      <div class="lob-chat">
+        <p class="lob-sec">チャット</p>
+        <div class="chat-log" id="chat-log" aria-live="polite"></div>
+        <div class="chat-quick" id="chat-quick">
+          <button class="btn small ghost" type="button">よろしく！</button>
+          <button class="btn small ghost" type="button">対戦しよう！</button>
+          <button class="btn small ghost" type="button">GG！</button>
+          <button class="btn small ghost" type="button">もう1回！</button>
+        </div>
+        <div class="chat-send">
+          <input id="chat-in" maxlength="50" autocomplete="off" placeholder="メッセージ（50文字まで）" aria-label="チャットのメッセージ">
+          <button class="btn small primary" id="b-chat" type="button">送信</button>
+        </div>
+      </div>
+      <button class="btn ghost small" id="b-leave" type="button">ルームから出る</button>
+    </div>
   </div>
   <div id="hudbtns">
     <button id="b-pause" type="button" aria-label="ポーズ">II</button>
@@ -179,16 +283,16 @@
 </div>
 <p id="rotate">横向きにすると大きく遊べます</p>
 <div id="help">
-  <div class="p1"><b>1P</b> 移動 <kbd>A</kbd><kbd>D</kbd> ジャンプ <kbd>W</kbd> しゃがみ <kbd>S</kbd> ／ パンチ <kbd>F</kbd> キック <kbd>G</kbd> 必殺 <kbd>H</kbd></div>
-  <div class="p2"><b>2P</b> 移動 <kbd>←</kbd><kbd>→</kbd> ジャンプ <kbd>↑</kbd> しゃがみ <kbd>↓</kbd> ／ パンチ <kbd>K</kbd> キック <kbd>L</kbd> 必殺 <kbd>;</kbd></div>
-  <div>オンライン・CPU戦はどちらのキーでも操作できます ／ 相手と逆方向でガード ／ キャラ選択はパンチで決定・キックで取消 ／ <kbd>Esc</kbd> ポーズ ／ <kbd>M</kbd> 音</div>
+  <div class="p1"><b>1P</b> 移動 <kbd>A</kbd><kbd>D</kbd> ジャンプ <kbd>W</kbd> しゃがみ <kbd>S</kbd> ／ パンチ <kbd>F</kbd> キック <kbd>G</kbd> 必殺 <kbd>H</kbd> ／ SA2 <kbd>H</kbd>を押しながら<kbd>F</kbd></div>
+  <div class="p2"><b>2P</b> 移動 <kbd>←</kbd><kbd>→</kbd> ジャンプ <kbd>↑</kbd> しゃがみ <kbd>↓</kbd> ／ パンチ <kbd>K</kbd> キック <kbd>L</kbd> 必殺 <kbd>;</kbd> ／ SA2 <kbd>;</kbd>を押しながら<kbd>K</kbd></div>
+  <div>オンライン・CPU戦はどちらのキーでも操作できます ／ 相手と逆方向でガード（ガードし続けると割れる） ／ ダウン中にパンチかキックで後ろ受け身 ／ キャラ選択はパンチで決定・キックで取消 ／ <kbd>Esc</kbd> ポーズ ／ <kbd>M</kbd> 音</div>
 </div>
 <div id="touch" hidden>
   <div id="stick" aria-label="移動パッド"><div id="knob"></div></div>
   <div id="btns">
     <button type="button" data-a="punch">P</button>
     <button type="button" data-a="kick">K</button>
-    <button type="button" data-a="special">必殺</button>
+    <button type="button" data-a="special" aria-label="必殺技（タップでSA1、上にスライドでSA2）">必殺<small>↑SA2</small></button>
   </div>
 </div>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -196,6 +300,9 @@
 const GAME_NAME = '拳闘列伝';
 const cv = document.getElementById('c'), ctx = cv.getContext('2d');
 const W = 960, H = 540, GROUND = 450, GRAV = 0.9;
+// match rules: rounds to win, round time in seconds (0 = no limit), HP multiplier. Online rooms let the host change them.
+const DEFAULT_RULES = {wins: 2, time: 99, hp: 1};
+const GUARD_MAX = 70;   // guard durability (each block costs 2 + the attack's damage)
 
 // ---------- input ----------
 const keys = {}, pressed = {};
@@ -204,7 +311,8 @@ const BIND = {
   2: {left:['ArrowLeft'], right:['ArrowRight'], up:['ArrowUp'], down:['ArrowDown'],
       punch:['KeyK','Numpad1'], kick:['KeyL','Numpad2'], special:['Semicolon','Numpad3']}
 };
-const ACTIONS = ['left', 'right', 'up', 'down', 'punch', 'kick', 'special'];
+// 'super' (SA2) has no key of its own: it comes from holding 必殺 and pressing パンチ, or sliding 必殺 upward on the pad
+const ACTIONS = ['left', 'right', 'up', 'down', 'punch', 'kick', 'special', 'super'];
 const GAME_KEYS = new Set(Object.values(BIND).flatMap(b => Object.values(b).flat()).concat(['Enter','Escape','Space']));
 const typing = e => e.target && e.target.tagName === 'INPUT';
 addEventListener('keydown', e => {
@@ -223,19 +331,40 @@ const ctrl = {1:{held:{}, pressed:{}}, 2:{held:{}, pressed:{}}};
 const OPPOSITE = {left: 'right', right: 'left', up: 'down', down: 'up'};
 const held = (p, a) => !!ctrl[p].held[a] && !(OPPOSITE[a] && ctrl[p].held[OPPOSITE[a]]);
 const hit1 = (p, a) => !!ctrl[p].pressed[a];
+// 必殺 key: tap and release = SA1 (fires on release); hold it and press パンチ = SA2
+const superKeys = {};
+function superRule(o, st) {
+  const tapRaw = !!o.pressed.special, holding = !!o.held.special;
+  delete o.pressed.special;
+  if (holding) {
+    if (!st.on) { st.on = true; st.used = false; }
+    if (o.pressed.punch) { o.pressed.super = true; delete o.pressed.punch; st.used = true; }
+  } else if (st.on) {
+    if (!st.used) o.pressed.special = true;
+    st.on = false;
+  } else if (tapRaw) o.pressed.special = true;   // pressed and released between two frames
+  return o;
+}
 function readKeys(sets) {
   const o = {held:{}, pressed:{}};
   for (const a of ACTIONS) for (const p of sets) {
-    if (BIND[p][a].some(k => keys[k])) o.held[a] = true;
-    if (BIND[p][a].some(k => pressed[k])) o.pressed[a] = true;
+    const ks = BIND[p][a];
+    if (!ks) continue;
+    if (ks.some(k => keys[k])) o.held[a] = true;
+    if (ks.some(k => pressed[k])) o.pressed[a] = true;
   }
-  return o;
+  return superRule(o, superKeys[sets.join()] ||= {on: false, used: false});
 }
 function withTouch(o) {
   for (const a of ACTIONS) { if (touch.held[a]) o.held[a] = true; if (touch.pressed[a]) o.pressed[a] = true; }
   return o;
 }
-const localInput = () => withTouch(readKeys([1, 2]));
+// read once per frame: the 必殺 hold/release tracking must not run twice in one frame
+let inputFrame = 0, localCache = null, localCacheFrame = -1;
+const localInput = () => {
+  if (localCacheFrame !== inputFrame) { localCache = withTouch(readKeys([1, 2])); localCacheFrame = inputFrame; }
+  return localCache;
+};
 
 // ---------- audio (synthesized SFX + announcer) ----------
 const AU = {ctx:null, out:null, noise:null, muted:false};
@@ -319,6 +448,8 @@ const SFX = {
   reflect:  () => { tone('sine', 2400, 2400, 0.3, 0.15); tone('sine', 3600, 3600, 0.25, 0.08); noise(0.06, 0.3, 6000, 3000, 'highpass'); },
   mine:     () => { tone('square', 1500, 1500, 0.03, 0.1); tone('square', 1500, 1500, 0.03, 0.1, 0.08); noise(0.06, 0.15, 400, 200, 'lowpass'); },
   boom:     () => { noise(1.0, 0.8, 1800, 50, 'lowpass', 0.8); tone('sine', 90, 25, 0.9, 0.6); noise(0.15, 0.4, 3000, 800, 'bandpass', 1); },
+  superflash: () => { noise(0.5, 0.4, 300, 6000, 'bandpass', 1); tone('sawtooth', 110, 880, 0.45, 0.12);
+    [523, 659, 784, 1046].forEach(f => tone('square', f, f, 0.7, 0.05, 0.25)); },
   heal:     () => { [784, 988, 1175, 1568].forEach((f, i) => tone('sine', f, f, 0.5, 0.09, i * 0.08)); },
   mist:     () => { noise(0.7, 0.3, 3000, 600, 'bandpass', 0.8); tone('sine', 300, 180, 0.6, 0.06); },
   clash:    () => { tone('square', 1800, 600, 0.2, 0.12); noise(0.25, 0.4, 3000, 500, 'bandpass', 1); },
@@ -496,6 +627,9 @@ const CHARS = [
    alt:{body:'#5a5a6a', accent:'#66ccff'},
    hp:125, walk:2.8, back:2.4, jump:13, size:1.2, bulk:1.35, dmg:1.1, reach:1, speed:2, cost:30},
 ];
+// everyone gets 1.2× the listed HP so rounds last a little longer (relative toughness is unchanged)
+const HP_SCALE = 1.2;
+CHARS.forEach(c => { c.hp = Math.round(c.hp * HP_SCALE); });
 
 // ---------- attacks ----------
 // startup / active / recovery in frames; box relative to fighter front (unscaled)
@@ -541,6 +675,132 @@ const SPECIALS = {
 };
 const RIPOSTE = {start:1, active:1, rec:16};
 
+// ---------- SA2 (super arts): need a full POWER gauge; the screen darkens and the name is called out ----------
+// Frame counts start after the darkening. Each fighter picks one kind below and dresses it with a name and colours.
+const SUPER_KINDS = {
+  megashot:    {start:8, active:1, rec:24, proj:{speed:7, dmg:6, scale:2.1, hits:5}},                  // huge multi-hit shot
+  rushcombo:   {start:6, active:30, rec:20, rush:11, multi:5, dmg:4, stun:16, push:1.5,
+                box:{x:10, y:-125, w:72, h:110}, finisher:{dmg:12, stun:20, push:10, knock:true}},      // dash in, flurry, knockdown
+  risecombo:   {start:3, active:22, rec:12, rising:true, multi:5, dmg:6, stun:18, push:2, inv:18, launch:[-15, 3],
+                box:{x:0, y:-185, w:95, h:165}},                                                     // invincible rising flurry
+  superbeam:   {start:12, active:45, rec:24, beam:true, ranged:true, multi:4, dmg:3, stun:12, push:1,
+                box:{x:30, y:-135, w:0, h:70}},                                                      // screen-wide beam
+  bigaura:     {start:6, active:48, rec:20, multi:6, dmg:5, stun:14, push:2, box:{center:true, y:-210, w:300, h:220}},
+  superthrow:  {start:3, active:6, rec:24, grab:true, dmg:38, stun:20, push:14, knock:true, box:{x:20, y:-130, w:105, h:130}},
+  supercounter:{start:1, active:45, rec:24, counter:true, counterMult:3, counterMin:30},
+  meteor:      {start:6, active:54, rec:16, rain:{every:8, proj:{speed:0, fall:9, dmg:5, scale:0.9}}},  // shots raining on the opponent
+  awaken:      {start:10, active:1, rec:8, awaken:{rage:600, iron:600}},
+  fullheal:    {start:10, active:1, rec:8, heal:40, awaken:{iron:180}},
+  quake:       {start:10, active:1, rec:24, quake:900, quakeDmg:26},
+  toxic:       {start:8, active:1, rec:16, toxic:true},
+  blackhole:   {start:10, active:60, rec:18, pull:true, pullPower:9, pullRange:900, pullDmg:26, pullReach:160},
+  // armored charge: catches the opponent and carries them into the wall
+  wallcrush:   {start:6, active:36, rec:22, inv:8, armor:true, rush:12, carry:true, dmg:10, stun:30, push:0,
+                box:{x:5, y:-130, w:70, h:110}, finisher:{dmg:24, stun:24, push:12, knock:true}},
+  // invincible warps round the opponent, striking from alternating sides
+  shadowdance: {start:4, active:50, rec:18, inv:56, warp:{every:10, n:5}, dmg:6, stun:20, push:2,
+                finisher:{dmg:14, stun:20, push:10, knock:true}},
+  // a huge rolling ball along the floor: low, many hits
+  groundshot:  {start:8, active:1, rec:22, proj:{speed:5, dmg:8, scale:1.3, hits:4, low:true, ball:true, y:-34}},
+  // super armor through a long wind-up, then one enormous palm
+  armorstrike: {start:22, active:6, rec:26, inv:8, armor:true, advance:4, dmg:34, stun:24, push:14, knock:true,
+                box:{x:15, y:-145, w:115, h:135}},
+  // rolls and rebounds off both walls
+  pinball:     {start:6, active:66, rec:18, rush:13, bounce:true, multi:7, dmg:4, stun:14, push:2,
+                box:{x:-10, y:-80, w:80, h:80}},
+  // a mirror barrier that turns back the next few strikes and shots
+  mirror:      {start:10, active:1, rec:8, mirror:480, mirrorHits:3},
+  // three boomerangs at three heights
+  triboom:     {start:8, active:1, rec:22, volley:[-140, -95, -45], proj:{speed:10, dmg:6, scale:1.1, boomerang:true}},
+  // a slow tornado that drifts forward and keeps hitting
+  tornado:     {start:10, active:1, rec:22, proj:{speed:3.2, dmg:5, scale:1, hits:6, tornado:true, y:0}},
+  // marks the opponent's spot; a pillar of flame erupts there a moment later
+  pillar:      {start:8, active:1, rec:28, proj:{speed:0, dmg:9, scale:1, hits:3, pillar:26, y:0}},
+  // long wind-up, then a blast all around (it hurts the robot too)
+  selfdestruct:{start:30, active:4, rec:30, inv:8, armor:true, dmg:40, stun:24, push:14, knock:true, selfDmg:12,
+                box:{center:true, y:-250, w:400, h:260}},
+  // leaps at the opponent and lands with a shockwave
+  bodypress:   {start:8, active:60, rec:20, rising:true, press:true, dmg:36, stun:24, push:12, knock:true, high:true, waveDmg:10},
+  // an invincible flaming dash straight through the opponent
+  phoenix:     {start:6, active:30, rec:18, inv:38, ghost:true, rush:16, multi:5, dmg:5, stun:14, push:0,
+                box:{x:-30, y:-150, w:120, h:140}, finisher:{dmg:16, stun:20, push:10, knock:true}},
+  // a stream of shots fired from the hand (bats for LUNA, kunai for AYAME)
+  stream:      {start:4, active:30, rec:16, stream:{every:5, ys:[-130, -100, -70], proj:{speed:9, dmg:5, scale:0.7, push:2}}},
+  // a freezing wave that runs along the floor
+  icewave:     {start:10, active:1, rec:22, proj:{speed:11, dmg:16, scale:1, low:true, icewave:true, freeze:80, y:-24}},
+  // three homing dives in a row
+  multidive:   {start:4, active:120, rec:6, rising:true, dives:3, dmg:8, stun:18, push:3, high:true,
+                box:{x:-10, y:-95, w:100, h:105}, lastHit:{dmg:14, stun:20, push:10, knock:true, high:true}},
+  // scatters bombs round the opponent that go off one after another
+  minefield:   {start:10, active:1, rec:20, bombs:[-160, -80, 0, 80, 160], bombDmg:13},
+};
+const SA2 = {
+  RYUTA:   {kind:'megashot',   name:'真・波動弾',       colors:['#bff', '#3af']},
+  GOUDA:   {kind:'wallcrush',  name:'猛牛大暴走'},
+  SUZU:    {kind:'risecombo',  name:'昇龍天翔脚'},
+  YOGI:    {kind:'pillar',     name:'ヨガの火柱',       colors:['#ffd27a', '#f60']},
+  VOLT:    {kind:'bigaura',    name:'大放電',           fx:'lightning'},
+  KAGE:    {kind:'shadowdance',name:'影分身乱舞'},
+  HANA:    {kind:'superthrow', name:'フライングパワーボム'},
+  GENSAI:  {kind:'supercounter', name:'天地返し'},
+  YUKI:    {kind:'icewave',    name:'絶対零度',         colors:['#e8ffff', '#6cf']},
+  'MK-II': {kind:'selfdestruct', name:'最終兵器・自爆'},
+  HAYATE:  {kind:'multidive',  name:'鴉天狗三連落とし'},
+  ONIMARU: {kind:'awaken',     name:'鬼神覚醒'},
+  NOVA:    {kind:'superbeam',  name:'ノヴァ・バースト', colors:['#e0ffff', '#7ff']},
+  KAGAMI:  {kind:'mirror',     name:'八咫鏡・天照結界'},
+  TETSU:   {kind:'minefield',  name:'大発破'},
+  AZUSA:   {kind:'meteor',     name:'千本矢',           colors:['#fff6d0', '#c9a227'], arrow:true},
+  KAITO:   {kind:'triboom',    name:'トリプルブーメラン', colors:['#ffe9a0', '#c08020']},
+  SEIRA:   {kind:'fullheal',   name:'聖女の加護'},
+  RIN:     {kind:'groundshot', name:'ファイアーシュート', colors:['#fff', '#ff6020']},
+  DAIGORO: {kind:'quake',      name:'大地割り'},
+  TETSUZAN:{kind:'armorstrike',name:'不動金剛掌'},
+  LUNA:    {kind:'stream',     name:'ナイトメア・バット', colors:['#2a1a3a', '#c02040'], bat:true, drain:true},
+  MAMUSHI: {kind:'toxic',      name:'大毒霧'},
+  ARMA:    {kind:'pinball',    name:'ピンボールローリング', roll:true},
+  VOID:    {kind:'blackhole',  name:'ブラックホール'},
+  AYAME:   {kind:'stream',     name:'クナイ乱れ撃ち',   colors:['#ffffff', '#9aa4b0'], kunai:true, every:3, dmg:3},
+  HOMURA:  {kind:'phoenix',    name:'鳳凰天舞',         fx:'fire'},
+  TOKI:    {kind:'tornado',    name:'大竜巻',           colors:['#e0fff8', '#7ad0c0']},
+  BLITZ:   {kind:'rushcombo',  name:'ギャラクティカ連打', rush:14},
+  GAMMA:   {kind:'superbeam',  name:'怪獣王の咆哮',     colors:['#fff6c0', '#ff8020']},
+};
+// SA2 costs two of the fighter's own specials. The kinds above are tuned for a full 100 gauge, so
+// damage, healing and durations scale with the cost: 100 → 100%, 50 → about 68%, 20 → about 48%.
+const superScale = cost => 0.35 + 0.65 * Math.min(1, cost / 100);
+function buildSuper(c) {
+  const a = SA2[c.name], k = SUPER_KINDS[a.kind];
+  const cost = Math.min(100, c.cost * 2), sc = superScale(cost);
+  // invincible through the darkening (armored kinds only that long; risecombo etc. longer)
+  const m = {...k, kind: a.kind, name: a.name, colors: a.colors, fx: a.fx, cost, inv: k.inv ?? k.start + 2};
+  if (k.dmg) m.dmg = Math.max(1.5, Math.round((a.dmg || k.dmg) * c.dmg * sc * 10) / 10);   // tenths, so many-hit SA2s still scale
+  if (a.rush) m.rush = a.rush;
+  if (a.low) { m.low = true; m.box = {x:0, y:-50, w:85, h:50}; }
+  if (a.drain) m.drain = true;
+  if (a.roll) m.roll = true;
+  if (k.box) m.box = {...(m.box || k.box)};
+  if (m.box) m.box = {...m.box, x:(m.box.x || 0) * c.size, y:m.box.y * c.size, w:m.box.w * c.size, h:m.box.h * c.size};
+  if (k.finisher) m.finisher = {...k.finisher, dmg: Math.round(k.finisher.dmg * c.dmg * sc), low: !!a.low};
+  if (k.proj) m.proj = {...k.proj, dmg: k.proj.dmg * sc, colors: a.colors || ['#fff', '#fa0'], sa: true};
+  if (k.stream) m.stream = {...k.stream, every: a.every || k.stream.every,
+    proj: {...k.stream.proj, dmg: (a.dmg || k.stream.proj.dmg) * sc, colors: a.colors || ['#fff', '#fa0'], sa: true,
+      bat: !!a.bat, kunai: !!a.kunai, drain: !!a.drain, scale: a.kunai ? 0.5 : k.stream.proj.scale, speed: a.kunai ? 15 : k.stream.proj.speed}};
+  if (k.lastHit) m.lastHit = {...k.lastHit, dmg: Math.round(k.lastHit.dmg * c.dmg * sc)};
+  if (k.bombDmg) m.bombDmg = Math.round(k.bombDmg * c.dmg * sc);
+  if (k.waveDmg) m.waveDmg = Math.round(k.waveDmg * c.dmg * sc);
+  if (k.mirror) m.mirror = Math.round(k.mirror * sc);
+  if (k.rain) m.rain = {...k.rain, freezeLast: !!a.freezeLast,
+    proj: {...k.rain.proj, dmg: k.rain.proj.dmg * sc, colors: a.colors || ['#fff', '#fa0'], arrow: !!a.arrow, kunai: !!a.kunai}};
+  if (k.quakeDmg) m.quakeDmg = k.quakeDmg * sc;
+  if (k.pullDmg) m.pullDmg = k.pullDmg * sc;
+  if (k.counterMin) { m.counterMin = Math.round(k.counterMin * sc); m.counterMult = 1.5 + 1.5 * sc; }
+  if (k.heal) m.heal = Math.round(k.heal * sc);
+  if (k.awaken) m.awaken = {rage: Math.round((k.awaken.rage || 0) * sc), iron: Math.round((k.awaken.iron || 0) * sc)};
+  if (k.toxic) m.toxicLife = Math.round(300 * sc);
+  return m;
+}
+
 function buildMoves(c) {
   const m = {};
   for (const [k, b] of Object.entries(BASE_MOVES)) {
@@ -555,22 +815,32 @@ function buildMoves(c) {
   if (sp.dmg) m.special.dmg = Math.round(sp.dmg * c.dmg);
   if (sp.box) m.special.box = {...sp.box, x:(sp.box.x || 0) * c.size, y:sp.box.y * c.size, w:sp.box.w * c.size, h:sp.box.h * c.size};
   m.riposte = RIPOSTE;
+  m.super = buildSuper(c);
   return m;
 }
 
 class Fighter {
   constructor(id, c, alt) {
     this.id = id; this.c = c; this.moves = buildMoves(c);
+    this.maxHp = Math.round(c.hp * ((typeof game !== 'undefined' && game.rules) || DEFAULT_RULES).hp);
     this.body = alt ? c.alt.body : c.body; this.accent = alt ? c.alt.accent : c.accent; this.isAlt = !!alt;
     this.startX = id === 1 ? 280 : 680;
     this.wins = 0; this.reset();
   }
   reset() {
-    Object.assign(this, {x:this.startX, y:GROUND, vx:0, vy:0, hp:this.c.hp, dispHp:this.c.hp, meter:50,
+    Object.assign(this, {x:this.startX, y:GROUND, vx:0, vy:0, hp:this.maxHp, dispHp:this.maxHp, meter:50,
       facing: this.id === 1 ? 1 : -1, state:'idle', timer:0, move:null, hasHit:false,
-      crouch:false, blocking:false, stun:0, anim:0, flash:0, fireCd:0, usedDJ:false, frozen:0, rage:0, iron:0, blockstun:false});
+      crouch:false, blocking:false, stun:0, anim:0, flash:0, fireCd:0, usedDJ:false, frozen:0, rage:0, iron:0, blockstun:false,
+      mirror:0, mirrorN:0, carrying:false, guard:GUARD_MAX, guardT:0, crushed:0, techQ:false});
+  }
+  // the 天照結界 barrier breaks after turning back a few attacks
+  mirrorUsed(game) {
+    if (this.mirror > 0 && !(this.move === 'special' && this.moves.special.reflect) && --this.mirrorN <= 0) {
+      this.mirror = 0; game.popup('結界消滅', this.x, this.y - 170 * this.c.size, '#ccc');
+    }
   }
   reflecting() {
+    if (this.mirror > 0 && this.state !== 'ko') return true;
     const mv = this.move === 'special' && this.moves.special;
     return !!(mv && mv.reflect && this.timer >= mv.start && this.timer < mv.start + mv.active);
   }
@@ -578,7 +848,9 @@ class Fighter {
   get w() { return 50 * this.c.size * Math.max(0.9, this.c.bulk); }
   get h() { return (this.crouch ? 80 : 130) * this.c.size; }
   hurtbox() { return {x:this.x - this.w/2, y:this.y - this.h, w:this.w, h:this.h}; }
-  invuln() { const mv = this.move && this.moves[this.move]; return !!(mv && mv.inv && this.timer < mv.inv); }
+  invuln() {
+    if (this.state === 'wake' || this.state === 'roll') return true;
+    const mv = this.move && this.moves[this.move]; return !!(mv && mv.inv && this.timer < mv.inv); }
   attackBox() {
     const b = this.moves[this.move].box, s = this.c.size;
     if (b.center) return {x:this.x - b.w/2, y:this.y + b.y, w:b.w, h:b.h};
@@ -592,7 +864,7 @@ class Fighter {
     const x = this.facing === 1 ? this.x + b.x - 25*s : this.x - b.x + 25*s - b.w;
     return {x, y:this.y + b.y, w:b.w, h:b.h};
   }
-  busy() { return ['attack','hit','knock','down','ko','win'].includes(this.state); }
+  busy() { return ['attack','hit','knock','down','wake','roll','ko','win'].includes(this.state); }
 
   update(foe, game) {
     this.anim++;
@@ -601,6 +873,11 @@ class Fighter {
     if (this.frozen && (this.state !== 'hit' || !--this.frozen)) this.frozen = 0;
     if (this.rage) this.rage--;
     if (this.iron) this.iron--;
+    if (this.mirror) this.mirror--;
+    if (this.crushed) this.crushed--;
+    // guard durability comes back once you stop blocking for a moment
+    if (this.guardT > 0) this.guardT--;
+    else if (this.guard < GUARD_MAX) this.guard = Math.min(GUARD_MAX, this.guard + GUARD_MAX * 0.0045);   // full again in about 4 s
     this.dispHp += (this.hp - this.dispHp) * 0.08;
     const p = this.id, c = this.c, canAct = game.phase === 'fight';
 
@@ -615,6 +892,7 @@ class Fighter {
         this.blocking = canAct && held(p, back);
         this.vx = 0;
         if (canAct) {
+          if (hit1(p, 'super') && this.meter >= this.moves.super.cost) { this.startAttack('super'); break; }
           if (hit1(p, 'special') && this.meter >= c.cost && !this.fireCd) { this.startAttack('special'); break; }
           if (hit1(p, 'punch')) { this.startAttack(this.crouch ? 'cpunch' : 'punch'); break; }
           if (hit1(p, 'kick'))  { this.startAttack(this.crouch ? 'sweep' : 'kick'); break; }
@@ -655,9 +933,22 @@ class Fighter {
       case 'knock':
         if (this.onGround && this.vy >= 0 && this.timer++ > 2) { this.state = 'down'; this.stun = 40; this.vx = 0; sfx('land'); game.shake = Math.max(game.shake, 4); }
         break;
-      case 'down':
-        if (--this.stun <= 0) this.state = 'idle';
+      case 'down':   // P or K while down = 受け身 (roll back on getting up); otherwise get up where you lie
+        if (canAct && (hit1(p, 'punch') || hit1(p, 'kick'))) this.techQ = true;
+        if (--this.stun <= 0) {
+          this.state = this.techQ ? 'roll' : 'wake'; this.timer = 0; this.techQ = false;
+          if (this.state === 'roll') sfx('swishL');
+        }
         break;
+      case 'wake': case 'roll': {   // invincible while getting up; guard and crouch are read already, so a held guard is up on the first frame
+        this.facing = foe.x > this.x ? 1 : -1;
+        const bk = this.facing === 1 ? 'left' : 'right';
+        this.crouch = canAct && held(p, 'down');
+        this.blocking = canAct && held(p, bk);
+        if (this.state === 'roll') this.vx = this.timer < 16 ? -6 * this.facing : 0;
+        if (++this.timer >= (this.state === 'roll' ? 20 : 10)) { this.state = this.crouch ? 'crouch' : 'idle'; this.vx = 0; }
+        break;
+      }
       case 'ko':
         this.vx *= 0.95;
         break;
@@ -678,10 +969,177 @@ class Fighter {
   }
 
   startAttack(m) {
-    this.state = 'attack'; this.move = m; this.timer = 0; this.hasHit = false; this.vx = 0;
+    this.state = 'attack'; this.move = m; this.timer = 0; this.hasHit = false; this.vx = 0; this.superHits = 0;
+    this.carrying = false; this.landed = false; this.diving = false; this.diveN = 0;
     if (m === 'punch' || m === 'cpunch') sfx('swish');
     else if (m === 'kick' || m === 'sweep') sfx('swishL');
     else if (m === 'special') sfx({grab:'grab', counter:'stance', beam:'none', rage:'none', reflect:'none'}[this.c.special] || 'select');
+  }
+
+  tickSuper(mv, foe, game, active) {
+    const c = this.c, s = c.size, f = this.facing;
+    if (this.timer === 1) {   // the darkening: everything stops while the name is called out
+      this.meter = Math.max(0, this.meter - mv.cost); this.fireCd = 30;
+      game.superFlash = {t: 44, id: this.id};
+      game.hitstop = Math.max(game.hitstop, 40);
+      game.spark(this.x, this.y - 90 * s, '#ffffff', 30);
+      sfx('superflash'); announce('Super Art!');
+    }
+    const at = this.timer === mv.start;
+    if (mv.launch && at) { this.vy = mv.launch[0]; this.vx = mv.launch[1] * f; this.y -= 1; sfx('rise'); }
+    if (mv.proj && at) {
+      const p = mv.proj, onFloor = p.y !== undefined;   // floor shots (ball, ice, tornado, pillar) are placed from the ground
+      for (const dy of mv.volley || [onFloor ? p.y : -95]) {
+        const px = p.pillar ? foe.x : this.x + f * (p.tornado ? 80 : 60) * s;
+        const b = new Fireball(this, Math.max(30, Math.min(W - 30, px)), onFloor ? GROUND + dy : this.y + dy * s, p);
+        b.src = 1; game.projectiles.push(b);
+      }
+      sfx(p.boomerang ? 'swishL' : p.icewave ? 'ice' : p.pillar ? 'charge' : p.tornado ? 'rise' : 'beam');
+    }
+    if (mv.rush && !mv.carry && !mv.bounce) this.vx = active ? (this.superHits && !mv.ghost ? 2.5 : mv.rush) * f : this.vx * 0.7;
+    if (mv.multi && active && (this.timer - mv.start) % mv.multi === 0) this.hasHit = false;
+    if (mv.advance) this.vx = this.timer < mv.start ? mv.advance * f : 0;   // 不動金剛掌 steps in through the wind-up
+    // 猛牛大暴走: charge in, and once it connects carry the opponent all the way to the wall
+    if (mv.carry) {
+      if (this.carrying) {
+        this.vx = mv.rush * f; this.carryT++;
+        const gap = (this.w + foe.w) / 2 + 2;
+        foe.x = this.x + f * gap; foe.vx = 0; foe.state = 'hit'; foe.stun = 8; foe.blockstun = false;
+        if (this.carryT % 4 === 0) game.spark(this.x + f * gap / 2, GROUND - 10, '#c8a070', 4);
+        if (foe.x <= 46 || foe.x >= W - 46 || this.carryT > 45) {
+          this.carrying = false; this.vx = 0;
+          foe.x = Math.max(40, Math.min(W - 40, foe.x));
+          game.spark(foe.x, foe.y - 70, '#fff', 30); game.shake = 22; sfx('slam');
+          foe.takeHit(this, mv.finisher, game, foe.hurtbox());
+          game.hitstop = Math.max(game.hitstop, 14);
+          this.timer = mv.start + mv.active;   // straight into recovery
+        } else this.timer = Math.min(this.timer, mv.start + mv.active - 1);
+      } else this.vx = active ? mv.rush * f : this.vx * 0.7;
+    }
+    // ピンボール: rolls and rebounds off the walls
+    if (mv.bounce) {
+      if (active) {
+        if ((this.x <= 46 && this.facing < 0) || (this.x >= W - 46 && this.facing > 0)) {
+          this.facing *= -1; game.spark(this.x, this.y - 40, '#fff', 12); game.shake = Math.max(game.shake, 8); sfx('block');
+        }
+        this.vx = mv.rush * this.facing;
+      } else this.vx *= 0.7;
+    }
+    // 影分身乱舞: blink to the other side of the opponent and strike, again and again
+    if (mv.warp && active && (this.timer - mv.start) % mv.warp.every === 0) {
+      const n = (this.timer - mv.start) / mv.warp.every;
+      if (n < mv.warp.n) {
+        game.spark(this.x, this.y - 60, '#556', 12);
+        const side = this.x < foe.x ? 1 : -1;
+        let nx = foe.x + side * 72;
+        if (nx < 40 || nx > W - 40) nx = foe.x - side * 72;
+        this.x = nx; this.facing = foe.x > this.x ? 1 : -1;
+        game.spark(this.x, this.y - 60, '#99a', 12); sfx('appear');
+        if (!foe.invuln() && foe.y > GROUND - 160) {
+          this.superHits++;
+          foe.takeHit(this, n === mv.warp.n - 1 ? mv.finisher : mv, game, foe.hurtbox());
+        }
+      }
+    }
+    // 大怪獣ボディプレス: leap at the opponent and land with a shockwave
+    if (mv.press) {
+      if (at) { this.vy = -15; this.vx = Math.max(-9, Math.min(9, (foe.x - this.x) / 34)); this.y -= 1; sfx('jump'); }
+      if (this.timer > mv.start + 2 && this.onGround && !this.landed) {
+        this.landed = true; this.vx = 0; game.shake = 24; sfx('boom'); sfx('slam');
+        for (let k = 1; k <= 6; k++) for (const d of [-1, 1]) game.spark(this.x + d * k * 55, GROUND - 6, '#c8a070', 4);
+        const area = {x: this.x - 110 * s, y: this.y - 150 * s, w: 220 * s, h: 150 * s};
+        if (!foe.invuln()) {
+          if (overlap(area, foe.hurtbox())) { this.superHits++; foe.takeHit(this, mv, game, area); }
+          else if (foe.onGround && Math.abs(foe.x - this.x) < 340)
+            foe.takeHit(this, {dmg: mv.waveDmg, stun: 20, push: 6, knock: true, low: true, ranged: true}, game, foe.hurtbox());
+        }
+        this.timer = mv.start + mv.active;
+      }
+    }
+    // 鴉天狗三連落とし: hop up, home in on the opponent, land, and do it again
+    if (mv.dives) {
+      const g = c.grav || GRAV;
+      if (at) { this.diving = false; this.vy = -14; this.vx = Math.max(-6, Math.min(6, (foe.x - this.x) / 30)); this.y -= 1; sfx('jump'); }
+      if (this.timer > mv.start && !this.onGround && !this.diving && this.vy >= -2) {
+        this.diving = true; this.hasHit = false;
+        this.facing = foe.x >= this.x ? 1 : -1;
+        const N = 8;
+        this.vy = Math.max(6, (GROUND - this.y - g * N * N / 2) / N);
+        this.vx = Math.max(-18, Math.min(18, (foe.x - this.x - this.facing * 30) / N));
+        sfx('dive');
+      }
+      if (this.timer > mv.start + 2 && this.onGround && this.diving) {
+        this.diving = false; this.diveN++;
+        game.spark(this.x, GROUND - 6, '#fff', 8);
+        if (this.diveN < mv.dives) { this.vy = -13; this.vx = Math.max(-5, Math.min(5, (foe.x - this.x) / 30)); this.y -= 1; sfx('jump'); }
+        else this.timer = mv.start + mv.active;
+      }
+    }
+    // 最終兵器・自爆: the blast hurts the robot too
+    if (mv.selfDmg && at) {
+      this.hp = Math.max(1, this.hp - mv.selfDmg);
+      game.spark(this.x, this.y - 100 * s, '#ffb030', 50); game.spark(this.x, this.y - 100 * s, '#fff', 30);
+      game.shake = 26; sfx('boom'); sfx('ko');
+    }
+    // 大発破: bombs scattered round the opponent go off one after another
+    if (mv.bombs && at) {
+      mv.bombs.forEach((dx, i) => {
+        const b = new Mine(this, Math.max(30, Math.min(W - 30, foe.x + dx)));
+        b.fuse = 36 + i * 9; b.dmg = mv.bombDmg; game.projectiles.push(b);
+      });
+      sfx('mine');
+    }
+    // 八咫鏡・天照結界: a barrier that turns back the next few attacks
+    if (mv.mirror && at) {
+      this.mirror = mv.mirror; this.mirrorN = mv.mirrorHits;
+      game.spark(this.x, this.y - 80 * s, '#ffe080', 30); sfx('stance'); sfx('reflect');
+    }
+    if (mv.stream && active && (this.timer - mv.start) % mv.stream.every === 0) {
+      const n = (this.timer - mv.start) / mv.stream.every, ys = mv.stream.ys;
+      const b = new Fireball(this, this.x + f * 50 * s, this.y + ys[n % ys.length] * s, mv.stream.proj);
+      b.src = 3; game.projectiles.push(b); sfx('swish');
+    }
+    if (mv.ghost && active && this.timer % 6 === 0) sfx('flame');
+    if (mv.finisher && !mv.carry && !mv.warp && this.timer === mv.start + mv.active - 1 && this.superHits > 0 && !foe.invuln()
+        && (mv.ghost || overlap(this.attackBox(), {x: foe.x - 70, y: foe.y - 160, w: 140, h: 160}))) {
+      foe.takeHit(this, mv.finisher, game, this.attackBox());
+      game.shake = 14; game.hitstop = Math.max(game.hitstop, 12);
+    }
+    if (mv.rain && active && (this.timer - mv.start) % mv.rain.every === 0) {
+      const last = this.timer + mv.rain.every >= mv.start + mv.active;
+      const p = last && mv.rain.freezeLast ? {...mv.rain.proj, freeze: 50} : mv.rain.proj;
+      const b = new Fireball(this, Math.max(30, Math.min(W - 30, foe.x + (Math.random() - 0.5) * 70)), -30, p);
+      b.vx = 0; b.src = 2; game.projectiles.push(b); sfx('swish');
+    }
+    if (mv.awaken && at) {
+      if (mv.awaken.rage) this.rage = mv.awaken.rage;
+      if (mv.awaken.iron) this.iron = mv.awaken.iron;
+      game.spark(this.x, this.y - 80 * s, mv.awaken.rage ? '#ff3020' : '#e8c050', 40); game.shake = 12; sfx('roar');
+    }
+    if (mv.heal && at) {
+      const gain = Math.min(mv.heal, this.maxHp - this.hp); this.hp += gain;
+      game.popup('+' + gain, this.x, this.y - 175 * s, '#8fff9f'); game.spark(this.x, this.y - 80 * s, '#8fff9f', 40); sfx('heal');
+    }
+    if (mv.quake && at) {
+      for (let k = 1; k <= 12; k++) for (const d of [-1, 1]) game.spark(this.x + d * k * 70, GROUND - 6, '#c8a070', 4);
+      game.shake = 22; sfx('boom'); sfx('ko');
+      if (foe.onGround && !foe.invuln())
+        foe.takeHit(this, {dmg: Math.round(mv.quakeDmg * c.dmg), stun: 24, push: 8, knock: true, low: true, ranged: true}, game, foe.hurtbox());
+    }
+    if (mv.toxic && at) {
+      game.projectiles.forEach(q => { if (q.isCloud && q.owner === this) q.dead = true; });
+      const cl = new Cloud(this, Math.max(220, Math.min(W - 220, this.x + f * 260 * s)));
+      cl.big = true; cl.life = mv.toxicLife || 300; game.projectiles.push(cl); sfx('mist'); game.shake = 8;
+    }
+    if (mv.pull && active && foe.state !== 'ko' && foe.state !== 'down' && !foe.invuln()) {
+      const d = this.x - foe.x;
+      if (Math.abs(d) < mv.pullRange && Math.abs(d) > 60 * s) foe.x += Math.sign(d) * mv.pullPower;
+      if (this.timer % 3 === 0) game.particles.push({x: foe.x, y: foe.y - 70, vx: Math.sign(d) * 8, vy: (Math.random() - .5) * 3, life: 12, color: '#b08aff'});
+    }
+    if (mv.pull && this.timer === mv.start + mv.active - 1 && Math.abs(this.x - foe.x) < mv.pullReach * s && !foe.invuln()) {
+      game.spark(foe.x, foe.y - 70, '#b08aff', 40); game.shake = 16;
+      foe.takeHit(this, {dmg: Math.round(mv.pullDmg * c.dmg), stun: 24, push: 10, knock: true, ranged: true}, game, foe.hurtbox());
+    }
   }
 
   tickMove(foe, game) {
@@ -689,6 +1147,13 @@ class Fighter {
     let active = this.timer >= mv.start + (mv.hitFrom || 0) && this.timer < mv.start + mv.active;
     if (mv.airOnly && this.onGround) active = false;
     if (mv.hitUntil && this.timer >= mv.start + mv.hitUntil) active = false;
+
+    if (this.move === 'super') {
+      this.tickSuper(mv, foe, game, active);
+      if (!this.move) return;
+      if (mv.dives && !this.diving) active = false;   // the dives only hurt on the way down
+      if (mv.carry && this.carrying) active = false;
+    }
 
     if (this.move === 'special') {
       if (c.special === 'dive') {
@@ -709,7 +1174,7 @@ class Fighter {
         game.spark(this.x, this.y - 80, '#ff3020', 30); game.shake = 10; sfx('roar');
       }
       if (c.special === 'mine' && this.timer === mv.start) {
-        game.projectiles.forEach(p => { if (p.isMine && p.owner === this) p.dead = true; });
+        game.projectiles.forEach(p => { if (p.isMine && p.owner === this && !p.fuse) p.dead = true; });
         game.projectiles.push(new Mine(this, Math.max(30, Math.min(W - 30, this.x + this.facing * 70 * c.size))));
         sfx('mine');
       }
@@ -726,7 +1191,7 @@ class Fighter {
           sfx({slowfire:'flame', ice:'ice', rocket:'rocket', arrows:'swish', boomerang:'swishL', kunai:'swish'}[c.special] || 'fire');
         }
         if (mv.heal) {
-          const gain = Math.min(mv.heal, c.hp - this.hp);
+          const gain = Math.min(mv.heal, this.maxHp - this.hp);
           this.hp += gain;
           game.popup('+' + gain, this.x, this.y - 170 * c.size, '#8fff9f');
           game.spark(this.x, this.y - 80 * c.size, '#8fff9f', 22); sfx('heal');
@@ -777,7 +1242,10 @@ class Fighter {
 
     if (mv.box && active && !this.hasHit && !foe.invuln() && (!mv.grab || foe.onGround) && overlap(this.attackBox(), foe.hurtbox())) {
       this.hasHit = true;
-      foe.takeHit(this, mv, game, this.attackBox());
+      const sup = this.move === 'super';
+      if (sup) this.superHits++;
+      foe.takeHit(this, sup && mv.lastHit && this.diveN >= mv.dives - 1 ? mv.lastHit : mv, game, this.attackBox());
+      if (sup && mv.carry && foe.state === 'hit' && !foe.blockstun) { this.carrying = true; this.carryT = 0; }
     }
     if (this.timer >= mv.start + mv.active + mv.rec && (!mv.rising || this.onGround)) {
       this.move = null;
@@ -794,7 +1262,7 @@ class Fighter {
   }
 
   takeHit(src, mv, game, box) {
-    if (this.state === 'ko' || this.state === 'down') return;
+    if (this.state === 'ko' || this.state === 'down' || this.state === 'wake' || this.state === 'roll') return;
     const dir = src.x < this.x ? 1 : -1;
     const fx = box.x + box.w / 2, fy = box.y + box.h / 2;
     // poison ticks: unblockable chip that never interrupts
@@ -806,11 +1274,13 @@ class Fighter {
     }
     // counter stance: catch any strike or throw (not projectiles/beams) and throw the attacker back
     // for double the attack's damage, stealing their POWER. Unlike the mirror it punishes, but whiffs are costly.
-    const my = this.move === 'special' && this.moves.special;
+    const my = (this.move === 'special' || this.move === 'super') && this.moves[this.move];
     if (my && my.counter && !mv.proj && !mv.ranged && this.timer >= my.start && this.timer < my.start + my.active) {
+      const isSuper = this.move === 'super';
       this.move = 'riposte'; this.timer = 0;
-      const ret = Math.round(Math.max(15, mv.dmg * 2) * this.c.dmg);
-      game.popup(mv.grab ? '投げ返し!' : 'COUNTER!', this.x, this.y - 170 * this.c.size, '#fff');
+      const ret = Math.round(Math.max(my.counterMin || 15, mv.dmg * (my.counterMult || 2)) * this.c.dmg);
+      game.popup(isSuper ? '天地返し!' : mv.grab ? '投げ返し!' : 'COUNTER!', this.x, this.y - 170 * this.c.size, '#fff');
+      if (isSuper) game.shake = 18;
       game.spark(fx, fy, '#fff', 22); sfx('counter');
       const stolen = Math.min(src.meter, 25);
       src.meter -= stolen; this.meter = Math.min(100, this.meter + stolen);
@@ -823,24 +1293,43 @@ class Fighter {
     // mirror: deflects strikes, beams and blasts (throws still work)
     if (this.reflecting() && !mv.grab) {
       game.spark(fx, fy, '#ffe080', 14); game.hitstop = 4; sfx('reflect');
-      if (!mv.proj && !mv.ranged) src.vx = (src.x < this.x ? -1 : 1) * 7;
+      if (!mv.proj && !mv.ranged) {
+        src.vx = (src.x < this.x ? -1 : 1) * 7;
+        // the 天照結界 sends a strike straight back at the attacker
+        if (this.mirror > 0 && src.state !== 'ko') src.takeHit(this, {dmg: 6, stun: 18, push: 9, ranged: true}, game, src.hurtbox());
+      }
+      this.mirrorUsed(game);
       return;
     }
-    let dmg = Math.round(mv.dmg * (src.rage ? 1.5 : 1));
+    let dmg = Math.round(mv.dmg * (src.rage ? 1.5 : 1) * 10) / 10;
     if (this.canBlock(mv)) {
       this.hp = Math.max(1, this.hp - Math.ceil(dmg * 0.15));
+      // every block wears the guard down; when it runs out the guard breaks and you are left wide open
+      this.guard -= 2 + dmg; this.guardT = 50;
+      if (this.guard <= 0) {
+        this.guard = GUARD_MAX; this.guardT = 0;
+        this.state = 'hit'; this.stun = 56; this.crushed = 56; this.blockstun = false; this.blocking = false;
+        this.move = null; this.vx = dir * 4;
+        game.popup('GUARD CRUSH!', this.x, this.y - 170 * this.c.size, '#ff6a2a');
+        game.spark(fx, fy, '#ff6a2a', 26); game.shake = 14; game.hitstop = 12; sfx('slam');
+        return;
+      }
       this.vx = dir * mv.push * 0.6; this.state = 'hit'; this.stun = Math.floor(mv.stun * 0.5); this.blockstun = true;
       this.meter = Math.min(100, this.meter + 4);
+      src.meter = Math.min(100, src.meter + dmg * 0.5);   // pressing an opponent who blocks still builds a little POWER
       game.spark(fx, fy, '#8cf', 8); game.hitstop = 3; sfx('block');
       return;
     }
     // 金剛身: half damage and no flinch from anything but throws
-    if (this.iron > 0 && !mv.grab) dmg = Math.ceil(dmg / 2);
-    const ironWall = this.iron > 0 && !mv.grab && this.hp > dmg;
+    // armored SA2s (猛牛大暴走, 不動金剛掌, 自爆) take hits the same way through their wind-up and strike
+    const sa = this.move === 'super' && this.moves.super;
+    const superArmor = !!(sa && sa.armor && (this.timer < sa.start + sa.active || this.carrying));
+    if ((this.iron > 0 || superArmor) && !mv.grab) dmg = Math.ceil(dmg / 2);
+    const ironWall = (this.iron > 0 || superArmor) && !mv.grab && this.hp > dmg;
     // armor: light hits deal damage but do not interrupt
     if (ironWall || (this.c.armor && dmg <= this.c.armor && !mv.knock && !mv.freeze && this.onGround && this.hp > dmg)) {
       this.hp -= dmg; this.flash = 4;
-      if (mv.drain) src.hp = Math.min(src.c.hp, src.hp + dmg);
+      if (mv.drain) src.hp = Math.min(src.maxHp, src.hp + dmg);
       src.meter = Math.min(100, src.meter + dmg);
       game.spark(fx, fy, '#ccd', 10); game.hitstop = 4; sfx('armor');
       return;
@@ -848,8 +1337,8 @@ class Fighter {
     this.hp -= dmg; this.flash = 6; this.blockstun = false;
     if (mv.grab) { game.popup('THROW!', this.x, this.y - 160, '#ffd040'); game.shake = 12; }
     if (mv.drain) {
-      src.hp = Math.min(src.c.hp, src.hp + dmg);
-      game.popup('+' + dmg, src.x, src.y - 170 * src.c.size, '#ff6080'); game.spark(src.x, src.y - 80, '#c02040', 14);
+      src.hp = Math.min(src.maxHp, src.hp + dmg);
+      game.popup('+' + Math.round(dmg), src.x, src.y - 170 * src.c.size, '#ff6080'); game.spark(src.x, src.y - 80, '#c02040', 14);
     }
     src.meter = Math.min(100, src.meter + dmg * 1.2);
     this.meter = Math.min(100, this.meter + dmg * 0.6);
@@ -908,6 +1397,93 @@ class Fighter {
       }
     }
     if (spActive && c.special === 'blaze') drawFlames(x, y - 85 * s, 100 * s, this.anim);
+    // ---- SA2 effects ----
+    const supActive = mv === 'super' && this.timer >= mvd.start && this.timer < mvd.start + mvd.active;
+    if (mv === 'super' && this.timer < mvd.start) {   // charging glow while the name is called out
+      const r = 95 * s + Math.sin(this.anim * 0.6) * 8;
+      const g = ctx.createRadialGradient(x, y - 75 * s, 10, x, y - 75 * s, r);
+      g.addColorStop(0, 'rgba(255,240,150,.55)'); g.addColorStop(1, 'rgba(255,200,60,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y - 75 * s, r, 0, Math.PI * 2); ctx.fill();
+    }
+    if (supActive && mvd.kind === 'bigaura') {
+      if (mvd.fx === 'fire') drawFlames(x, y - 100 * s, 165 * s, this.anim); else drawLightning(x, y - 100 * s, 150 * s);
+    }
+    if (supActive && mvd.kind === 'phoenix') {   // a firebird wrapped round the body
+      drawFlames(x, y - 80 * s, 95 * s, this.anim);
+      const flap = Math.sin(this.anim * 0.7) * 25;
+      ctx.fillStyle = 'rgba(255,170,40,.75)';
+      for (const d of [-1, 1]) {
+        ctx.beginPath(); ctx.moveTo(x, y - 95 * s);
+        ctx.quadraticCurveTo(x - f * 60 * s, y - (150 + flap * d) * s, x - f * 130 * s, y - (120 + flap * d) * s);
+        ctx.quadraticCurveTo(x - f * 70 * s, y - 95 * s, x, y - 75 * s); ctx.fill();
+      }
+    }
+    if (mv === 'super' && mvd.armor && (this.timer < mvd.start + mvd.active || this.carrying)) {   // super armor glow
+      ctx.save(); ctx.globalAlpha = 0.45 + Math.sin(this.anim * 0.5) * 0.2;
+      ctx.strokeStyle = mvd.selfDmg ? '#ff4030' : '#ffd860'; ctx.lineWidth = 7;
+      ctx.beginPath(); ctx.ellipse(x, y - 68 * s, 52 * s * B, 84 * s, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    }
+    if (mv === 'super' && mvd.selfDmg) {
+      if (this.timer < mvd.start && Math.floor(this.anim / 4) % 2) {   // warning lights while it counts down
+        ctx.fillStyle = 'rgba(255,40,30,.35)'; ctx.beginPath(); ctx.arc(x, y - 80 * s, 70 * s, 0, Math.PI * 2); ctx.fill();
+      }
+      if (this.timer >= mvd.start && this.timer < mvd.start + 14) {
+        const k = (this.timer - mvd.start) / 14, r = 60 + k * 170;
+        const g = ctx.createRadialGradient(x, y - 90 * s, 5, x, y - 90 * s, r);
+        g.addColorStop(0, '#fff'); g.addColorStop(0.4, '#ffd040'); g.addColorStop(0.75, '#ff5010'); g.addColorStop(1, 'rgba(255,40,0,0)');
+        ctx.save(); ctx.globalAlpha = 1 - k * 0.6; ctx.fillStyle = g;
+        ctx.beginPath(); ctx.arc(x, y - 90 * s, r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      }
+    }
+    if (this.mirror > 0) {   // 天照結界: a ring of mirrors
+      ctx.save(); ctx.globalAlpha = Math.min(1, this.mirror / 30) * 0.8;
+      for (let i = 0; i < 6; i++) {
+        const a = this.anim * 0.05 + i * Math.PI / 3, mx = x + Math.cos(a) * 62 * s, my = y - 75 * s + Math.sin(a) * 80 * s;
+        const g = ctx.createLinearGradient(mx - 8, my - 18, mx + 8, my + 18);
+        g.addColorStop(0, '#fff'); g.addColorStop(1, '#e0b040');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(mx, my, 8 * s, 18 * s, 0, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.strokeStyle = 'rgba(255,230,140,.5)'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(x, y - 75 * s, 62 * s, 80 * s, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    }
+    if (mv === 'super' && mvd.beam) {
+      const hy = y - 100 * s, hx = x + f * 55 * s, [c0, c1] = mvd.colors || ['#fff', '#fa0'];
+      if (this.timer < mvd.start) {
+        const k = Math.max(0, this.timer) / mvd.start, r = 6 + k * 30;
+        ctx.fillStyle = c1 + 'aa'; ctx.beginPath(); ctx.arc(hx, hy, r + Math.random() * 4, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx, hy, r * 0.5, 0, Math.PI * 2); ctx.fill();
+      } else if (supActive) {
+        const end = f === 1 ? W : 0, th = 46 + Math.sin(this.anim * 0.9) * 8;
+        const g = ctx.createLinearGradient(0, hy - th, 0, hy + th);
+        g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.25, c1); g.addColorStop(0.5, '#fff');
+        g.addColorStop(0.75, c1); g.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = g; ctx.fillRect(Math.min(hx, end), hy - th, Math.abs(end - hx), th * 2);
+        ctx.fillStyle = c0; ctx.beginPath(); ctx.arc(hx, hy, th * 1.1, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    if (mv === 'super' && mvd.kind === 'blackhole' && this.timer >= mvd.start - 4 && this.timer < mvd.start + mvd.active) {
+      const ox = x + f * 70 * s, oy = y - 100 * s, r = 30 + Math.sin(this.anim * 0.4) * 4;
+      const g = ctx.createRadialGradient(ox, oy, 2, ox, oy, r * 3);
+      g.addColorStop(0, '#000'); g.addColorStop(0.35, '#3a1080'); g.addColorStop(1, 'rgba(150,90,255,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ox, oy, r * 3, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#d8c0ff'; ctx.lineWidth = 3;
+      for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.arc(ox, oy, r + i * 14, -this.anim * 0.25 + i, -this.anim * 0.25 + i + 2.4); ctx.stroke(); }
+    }
+    if (mv === 'super' && mvd.kind === 'supercounter' && this.timer < mvd.start + mvd.active) {
+      ctx.strokeStyle = 'rgba(255,240,180,.75)'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(x, y - 75 * s, 95 * s + Math.sin(this.anim * 0.4) * 5, 0, Math.PI * 2); ctx.stroke();
+    }
+    if (this.crushed) {   // guard broken: stars spin over the head
+      ctx.fillStyle = '#ffe040';
+      for (let i = 0; i < 3; i++) {
+        const a = this.anim * 0.18 + i * Math.PI * 2 / 3, sx = x + Math.cos(a) * 30 * s, sy = y - 150 * s + Math.sin(a) * 8;
+        ctx.beginPath();
+        for (let k = 0; k < 10; k++) { const rr = k % 2 ? 3 : 8, t = k * Math.PI / 5 - Math.PI / 2; ctx.lineTo(sx + Math.cos(t) * rr, sy + Math.sin(t) * rr); }
+        ctx.fill();
+      }
+    }
     if (this.iron) {
       ctx.save(); ctx.globalAlpha = 0.35 + Math.sin(this.anim * 0.3) * 0.15;
       ctx.strokeStyle = '#ffd860'; ctx.lineWidth = 6;
@@ -966,8 +1542,8 @@ class Fighter {
       drawHead(c, acc, 0, 0, this.anim, this.flash); ctx.restore();
       ctx.restore(); return;
     }
-    if (mv === 'special' && c.special === 'roll' && spActive) {   // curled up into a rolling ball
-      ctx.translate(0, -38); ctx.rotate(this.timer * 0.5);
+    if ((mv === 'special' && c.special === 'roll' && spActive) || (supActive && mvd.roll) || st === 'roll') {   // curled up into a rolling ball
+      ctx.translate(0, -38); ctx.rotate(this.timer * (st === 'roll' ? -0.4 : 0.5));
       ctx.fillStyle = body; ctx.beginPath(); ctx.arc(0, 0, 36, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = acc; ctx.lineWidth = 6;
       for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(0, 0, 30, i * 2.1, i * 2.1 + 1); ctx.stroke(); }
@@ -978,8 +1554,8 @@ class Fighter {
     // reach characters stretch their limbs on active frames
     const R = v => 30 + (v - 30) * c.reach;
     const bob = (st === 'idle') ? Math.sin(this.anim * 0.12) * 2 : 0;
-    const sliding = mv === 'special' && c.special === 'slide' && activeish;
-    const crouch = (this.crouch && st !== 'jump') || sliding;
+    const sliding = (mv === 'special' && c.special === 'slide' && activeish) || (supActive && mvd.low);
+    const crouch = (this.crouch && st !== 'jump') || sliding || st === 'wake';
     const air = !this.onGround && st !== 'knock' && st !== 'ko';
     const hipY = crouch ? -40 : -65;
     const shY = crouch ? -80 : -115 + bob;
@@ -1004,6 +1580,7 @@ class Fighter {
     if (mv === 'special' && c.special === 'tackle' && activeish) { lF = [25, hipY + 30, 30, 0]; lB = [-25, hipY + 30, -45, 0]; }
     if (mv === 'special' && c.special === 'dive' && this.timer >= mvd.start + mvd.hitFrom && air) { lF = [30, hipY + 20, 60, hipY + 55]; lB = [-10, hipY + 20, -5, hipY + 40]; }
     if (sliding) { lF = [40, -14, 85, -6]; lB = [-20, -18, -45, -2]; }
+    if (mv === 'super' && mvd.kind === 'risecombo' && supActive) lF = [30, hipY - 30, 42, hipY - 72];
     if (mv === 'special' && c.special === 'whirl' && activeish && air) {
       const sw = Math.sin(this.anim * 0.9) > 0 ? 1 : -1;   // legs whip round
       lF = [35 * sw, hipY, 75 * sw, hipY - 6]; lB = [-30 * sw, hipY + 10, -60 * sw, hipY + 14];
@@ -1072,6 +1649,25 @@ class Fighter {
       } else if (sp === 'breath') {
         aF = [-6, shY + 25, -22, shY + 40]; aB = [-14, shY + 20, -30, shY + 30];
       }
+    }
+    if (mv === 'super') {
+      const k = mvd.kind, early = this.timer < mvd.start;
+      if (early) { aF = [30, shY - 5, 40, shY - 38]; aB = [-22, shY - 5, -32, shY - 38]; }   // powering up
+      else if (k === 'rushcombo') {   // alternating rapid strikes
+        const jab = Math.floor(this.timer / 3) % 2;
+        aF = jab ? [40, shY + 8, 88, shY + 6] : [24, shY + 22, 30, shY + 2];
+        aB = jab ? [10, shY + 30, 22, shY + 10] : [34, shY + 14, 80, shY + 16];
+      } else if (k === 'risecombo') { aF = [26, shY - 15, 30, shY - 58]; }
+      else if (k === 'megashot' || k === 'superbeam') { aF = [35, shY + 18, 64, shY + 18]; aB = [31, shY + 24, 60, shY + 24]; }
+      else if (k === 'superthrow') { aF = [35, shY + 15, 60, shY + 6]; aB = [30, shY + 25, 56, shY + 20]; }
+      else if (k === 'meteor' || k === 'quake' || k === 'awaken' || k === 'fullheal' || k === 'toxic') {
+        aF = [26, shY - 10, 18, shY - 45]; aB = [-18, shY - 10, -10, shY - 45];
+      } else if (k === 'bigaura' || k === 'blackhole') { aF = [32, shY - 5, 50, shY - 30]; aB = [-24, shY - 5, -42, shY - 30]; }
+      else if (k === 'supercounter') { aF = [30, shY + 8, 44, shY - 8]; aB = [22, shY + 22, 40, shY + 20]; }
+      else if (k === 'wallcrush' || k === 'armorstrike' || k === 'shadowdance') { aF = [40, shY + 10, 92, shY + 8]; aB = [30, shY + 22, 70, shY + 24]; }
+      else if (k === 'stream' || k === 'triboom' || k === 'groundshot' || k === 'icewave' || k === 'tornado') { aF = [35, shY + 18, 64, shY + 18]; aB = [-20, shY + 20, -36, shY + 30]; }
+      else if (k === 'pillar' || k === 'minefield' || k === 'mirror' || k === 'bodypress') { aF = [26, shY - 10, 18, shY - 45]; aB = [-18, shY - 10, -10, shY - 45]; }
+      else if (k === 'selfdestruct' || k === 'phoenix') { aF = [32, shY - 5, 60, shY - 20]; aB = [-24, shY - 5, -52, shY - 20]; }
     }
     if (mv === 'riposte') { aF = [36, shY + 5, 60, shY - 20]; aB = [26, shY + 20, 50, shY + 5]; }
     if (st === 'hit' || st === 'knock' || st === 'ko') { aF = [-10, shY + 25, -25, shY + 35]; aB = [-14, shY + 20, -32, shY + 15]; }
@@ -1310,41 +1906,124 @@ function drawLightning(cx, cy, r) {
 class Fireball {
   constructor(owner, x, y, p) {
     Object.assign(this, {owner, x, y, p, vx: owner.facing * p.speed, life: 220, dead: false, t: 0, pk: CHARS.indexOf(owner.c),
-      dir0: owner.facing, hitGo: false, hitBack: false});
+      dir0: owner.facing, hitGo: false, hitBack: false, hitsLeft: p.hits || 0, hitCd: 0, src: 0});
+    if (p.pillar) this.life = 24;   // counts down only once the pillar has erupted
   }
-  box() { const s = this.p.scale; return {x:this.x - 22*s, y:this.y - 18*s, w:44*s, h:36*s}; }
+  box() {
+    const p = this.p, s = p.scale;
+    if (p.tornado) return {x:this.x - 45, y:this.y - 210, w:90, h:210};
+    if (p.pillar) return {x:this.x - 42, y:this.y - 280, w:84, h:280};
+    if (p.icewave) return {x:this.x - 42, y:this.y - 40, w:84, h:64};
+    return {x:this.x - 22*s, y:this.y - 18*s, w:44*s, h:36*s};
+  }
   update(game) {
     this.x += this.vx; this.t++;
+    if (this.p.pillar) {   // waits at the marked spot, then erupts
+      if (this.t === this.p.pillar) { game.shake = Math.max(game.shake, 12); sfx('flame'); sfx('boom'); }
+      if (this.t < this.p.pillar) return;
+    }
+    if (this.p.fall) {   // dropped from the sky by a 降り注ぐ SA2
+      this.y += this.p.fall;
+      if (this.y > GROUND - 8) { this.dead = true; game.spark(this.x, GROUND - 6, this.p.colors[1], 6); return; }
+    }
     if (this.p.boomerang) {   // slows, turns around about 300px out, and is caught on the way back
       this.vx -= this.dir0 * 0.135;
       if (Math.sign(this.vx) !== this.dir0 && Math.abs(this.x - this.owner.x) < 30) this.dead = true;
     }
     if (--this.life <= 0 || this.x < -60 || this.x > W + 60) this.dead = true;
     const foe = game.fighters.find(f => f !== this.owner);
-    if (!this.dead && foe.reflecting()) {
+    if (!this.dead && !this.p.pillar && foe.reflecting()) {
       const hb = foe.hurtbox(), rb = {x:hb.x - 30, y:hb.y - 20, w:hb.w + 60, h:hb.h + 20};
       if (overlap(this.box(), rb)) {
         this.owner = foe; this.vx = -this.vx * 1.3; this.life = 220; this.dir0 = Math.sign(this.vx);
         foe.meter = Math.min(100, foe.meter + 15);
         game.spark(this.x, this.y, '#fff', 16); game.popup('REFLECT!', foe.x, foe.y - 165, '#ffe080');
-        sfx('reflect'); return;
+        sfx('reflect'); foe.mirrorUsed(game); return;
       }
     }
     const back = this.p.boomerang && Math.sign(this.vx) !== this.dir0;
-    if (!this.dead && !foe.invuln() && !(back ? this.hitBack : this.hitGo) && overlap(this.box(), foe.hurtbox()) && foe.state !== 'down') {
-      if (back) this.hitBack = true; else this.hitGo = true;
-      if (!this.p.boomerang) this.dead = true;
-      const fz = this.p.freeze;
-      foe.takeHit(this.owner, {dmg:this.p.dmg, stun:fz || 22, push:fz ? 2 : 9, proj:true, freeze:fz}, game, this.box());
+    if (this.hitCd > 0) this.hitCd--;
+    // a multi-hit SA2 shot hits every few frames until its hits run out; ordinary shots hit once (a boomerang once each way)
+    const spent = this.p.hits ? this.hitCd > 0 : (back ? this.hitBack : this.hitGo);
+    if (!this.dead && !foe.invuln() && !spent && overlap(this.box(), foe.hurtbox()) && foe.state !== 'down') {
+      let last = false;
+      if (this.p.hits) { this.hitCd = 6; last = --this.hitsLeft <= 0; if (last) this.dead = true; }
+      else { if (back) this.hitBack = true; else this.hitGo = true; if (!this.p.boomerang) this.dead = true; }
+      const p = this.p, fz = p.freeze;
+      const dmg = Math.round(p.dmg * (p.hits || p.fall || p.sa ? this.owner.c.dmg : 1) * 10) / 10;
+      foe.takeHit(this.owner, {dmg, stun: fz || (p.hits || p.push ? 16 : 22), push: fz ? 2 : p.push ?? (p.fall ? 1 : p.hits && !last ? 1.5 : 9),
+        proj:true, freeze:fz, knock: last, low: p.low, drain: p.drain}, game, this.box());
     }
+    if (this.p.pillar) return;
     for (const o of game.projectiles) {
-      if (o !== this && o.owner !== this.owner && !o.dead && !o.isCloud && overlap(this.box(), o.box())) {
-        this.dead = o.dead = true; game.spark(this.x, this.y, '#fff', 20); sfx('clash');
+      if (o !== this && o.owner !== this.owner && !o.dead && !o.isCloud && !o.isMine && !(o.p && o.p.pillar) && overlap(this.box(), o.box())) {
+        // an SA2 shot plows through ordinary ones
+        const mine = !!(this.p.hits || this.p.sa), theirs = !!(o.p && (o.p.hits || o.p.sa));
+        if (mine && !theirs) o.dead = true;
+        else if (theirs && !mine) this.dead = true;
+        else this.dead = o.dead = true;
+        game.spark(this.x, this.y, '#fff', 20); sfx('clash');
       }
     }
   }
   draw() {
-    const c = this.p.colors, s = this.p.scale;
+    const c = this.p.colors, s = this.p.scale, p = this.p;
+    if (p.pillar) {
+      if (this.t < p.pillar) {   // the warning circle on the floor
+        const k = this.t / p.pillar;
+        ctx.fillStyle = `rgba(255,120,30,${0.25 + 0.4 * k * (0.6 + 0.4 * Math.sin(this.t * 0.8))})`;
+        ctx.beginPath(); ctx.ellipse(this.x, GROUND - 2, 30 + 20 * k, 8, 0, 0, Math.PI * 2); ctx.fill();
+      } else {
+        const a = Math.min(1, this.life / 10), w = 46 + Math.sin(this.t * 1.1) * 6;
+        const g = ctx.createLinearGradient(this.x - w, 0, this.x + w, 0);
+        g.addColorStop(0, 'rgba(255,80,0,0)'); g.addColorStop(0.3, c[1]); g.addColorStop(0.5, '#fff6c0');
+        g.addColorStop(0.7, c[1]); g.addColorStop(1, 'rgba(255,80,0,0)');
+        ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = g; ctx.fillRect(this.x - w, GROUND - 300, w * 2, 300); ctx.restore();
+        if (this.t % 2 === 0) game.particles.push({x: this.x + (Math.random() - .5) * 60, y: GROUND - Math.random() * 280,
+          vx: 0, vy: -4, life: 12, color: Math.random() < .5 ? '#ffb020' : '#ff5010'});
+      }
+      return;
+    }
+    if (p.tornado) {
+      ctx.save(); ctx.strokeStyle = c[1]; ctx.lineWidth = 5;
+      for (let i = 0; i < 8; i++) {
+        const yy = this.y - 10 - i * 26, r = 18 + i * 7, ox = Math.sin(this.t * 0.3 + i * 0.8) * 8;
+        ctx.globalAlpha = 0.75; ctx.strokeStyle = i % 2 ? c[0] : c[1];
+        ctx.beginPath(); ctx.ellipse(this.x + ox, yy, r, 8, 0, this.t * 0.4 + i, this.t * 0.4 + i + 4.5); ctx.stroke();
+      }
+      ctx.restore(); return;
+    }
+    if (p.ball) {
+      const r = 20 * s;
+      ctx.fillStyle = Math.random() < 0.5 ? '#ffb030' : '#ff5010';
+      for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.arc(this.x - Math.sign(this.vx) * i * 14, this.y + (Math.random() - .5) * 6, r * (1 - i * 0.2), 0, Math.PI * 2); ctx.fill(); }
+      ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.t * 0.35 * Math.sign(this.vx));
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#222';
+      for (let i = 0; i < 5; i++) { const a = i * Math.PI * 2 / 5; ctx.beginPath(); ctx.arc(Math.cos(a) * r * 0.7, Math.sin(a) * r * 0.7, r * 0.22, 0, Math.PI * 2); ctx.fill(); }
+      ctx.beginPath(); ctx.arc(0, 0, r * 0.28, 0, Math.PI * 2); ctx.fill();
+      ctx.restore(); return;
+    }
+    if (p.icewave) {
+      const d = Math.sign(this.vx) || 1;
+      for (let i = 0; i < 4; i++) {
+        const bx = this.x - d * i * 26, h = 50 - i * 10;
+        ctx.fillStyle = i ? '#bfe8ffcc' : '#e8ffff';
+        ctx.beginPath(); ctx.moveTo(bx - 14, GROUND); ctx.lineTo(bx + d * 4, GROUND - h); ctx.lineTo(bx + 14, GROUND); ctx.fill();
+      }
+      if (this.t % 2 === 0) game.particles.push({x: this.x, y: GROUND - Math.random() * 40, vx: -d, vy: -1.5, life: 14, color: '#e8ffff'});
+      return;
+    }
+    if (p.bat) {
+      const d = Math.sign(this.vx) || 1, flap = Math.sin(this.t * 0.9) * 10;
+      ctx.save(); ctx.translate(this.x, this.y); ctx.scale(d, 1);
+      ctx.fillStyle = c[0]; ctx.strokeStyle = c[1]; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-22, -8 - flap); ctx.lineTo(-14, 2); ctx.lineTo(-24, 6 + flap * 0.3); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(22, -8 - flap); ctx.lineTo(14, 2); ctx.lineTo(24, 6 + flap * 0.3); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0, 0, 7, 9, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ff3050'; ctx.fillRect(2, -4, 3, 3);
+      ctx.restore(); return;
+    }
     if (this.p.rocket) {
       const d = Math.sign(this.vx);
       ctx.save(); ctx.translate(this.x, this.y); ctx.scale(d, 1);
@@ -1356,7 +2035,8 @@ class Fireball {
     }
     if (this.p.arrow || this.p.kunai) {
       const d = Math.sign(this.vx) || 1;
-      ctx.save(); ctx.translate(this.x, this.y); ctx.scale(d, 1);
+      ctx.save(); ctx.translate(this.x, this.y);
+      if (this.p.fall) ctx.rotate(Math.PI / 2); else ctx.scale(d, 1);
       if (this.p.arrow) {
         ctx.strokeStyle = '#8a6a3a'; ctx.lineWidth = 3;
         ctx.beginPath(); ctx.moveTo(-26, 0); ctx.lineTo(14, 0); ctx.stroke();
@@ -1371,7 +2051,7 @@ class Fireball {
       ctx.restore(); return;
     }
     if (this.p.boomerang) {
-      ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.t * 0.45);
+      ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.t * 0.45); ctx.scale(s / 0.8, s / 0.8);
       ctx.strokeStyle = '#c08020'; ctx.lineWidth = 8; ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(-16, -12); ctx.lineTo(0, 0); ctx.lineTo(16, -12); ctx.stroke();
       ctx.strokeStyle = '#ffe9a0'; ctx.lineWidth = 3;
@@ -1395,19 +2075,31 @@ class Mine {
   update(game) {
     this.t++;
     const foe = game.fighters.find(f => f !== this.owner);
-    const armed = this.t > 30;
+    const armed = this.t > (this.fuse ? 20 : 30);
     if (armed && foe.onGround && overlap(this.box(), foe.hurtbox())) this.explode(game, foe);
-    else if (this.t > 600) this.explode(game, foe);
+    else if (this.t > (this.fuse || 600)) this.explode(game, foe);   // 大発破 bombs go off on their own fuse
   }
   explode(game, foe) {
     this.dead = true;
-    game.spark(this.x, this.y - 25, '#ffa020', 30); game.spark(this.x, this.y - 25, '#fff', 12);
-    game.shake = 10; sfx('boom');
-    const blast = {x:this.x - 60, y:this.y - 120, w:120, h:120};
+    const big = !!this.fuse, r = big ? 75 : 60;
+    game.spark(this.x, this.y - 25, '#ffa020', big ? 40 : 30); game.spark(this.x, this.y - 25, '#fff', 12);
+    game.shake = big ? 14 : 10; sfx('boom');
+    const blast = {x:this.x - r, y:this.y - 130, w:r * 2, h:130};
     if (!foe.invuln() && overlap(blast, foe.hurtbox()))
-      foe.takeHit(this.owner, {dmg:Math.round(14 * this.owner.c.dmg), stun:20, push:9, knock:true, proj:true}, game, blast);
+      foe.takeHit(this.owner, {dmg:this.dmg || Math.round(14 * this.owner.c.dmg), stun:20, push:9, knock:true, proj:true}, game, blast);
   }
   draw() {
+    if (this.fuse) {   // a round bomb with a burning fuse
+      const left = this.fuse - this.t, blink = left < 20 && Math.floor(this.t / 3) % 2;
+      ctx.fillStyle = blink ? '#ff3020' : '#2a2a30';
+      ctx.beginPath(); ctx.arc(this.x, this.y - 16, 16, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ffffff55'; ctx.beginPath(); ctx.arc(this.x - 5, this.y - 21, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#8a6a3a'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(this.x + 6, this.y - 30); ctx.quadraticCurveTo(this.x + 14, this.y - 42, this.x + 8, this.y - 46); ctx.stroke();
+      ctx.fillStyle = Math.random() < .5 ? '#ffd020' : '#ff6020';
+      ctx.beginPath(); ctx.arc(this.x + 8, this.y - 47, 4 + Math.random() * 3, 0, Math.PI * 2); ctx.fill();
+      return;
+    }
     const blink = this.t <= 30 ? false : Math.floor(this.t / 8) % 2;
     ctx.fillStyle = '#4a4a50';
     ctx.beginPath(); ctx.ellipse(this.x, this.y - 2, 18, 9, 0, Math.PI, 0); ctx.fill();
@@ -1421,19 +2113,20 @@ class Mine {
 // poison mist: a lingering patch that ticks damage on the opponent standing in it
 class Cloud {
   constructor(owner, x) { Object.assign(this, {owner, x, y:GROUND - 60, t:0, life:180, dead:false, isCloud:true}); }
-  box() { return {x:this.x - 75, y:this.y - 70, w:150, h:130}; }
+  // the SA2 大毒霧 is a much wider patch that ticks harder
+  box() { const w = this.big ? 440 : 150; return {x:this.x - w / 2, y:this.y - 70, w, h:130}; }
   update(game) {
     this.t++;
     if (--this.life <= 0) { this.dead = true; return; }
     const foe = game.fighters.find(f => f !== this.owner);
-    if (this.t > 10 && this.t % 15 === 0 && !foe.invuln() && overlap(this.box(), foe.hurtbox()))
-      foe.takeHit(this.owner, {dmg:2, poison:true}, game, this.box());
+    if (this.t > 10 && this.t % (this.big ? 12 : 15) === 0 && !foe.invuln() && overlap(this.box(), foe.hurtbox()))
+      foe.takeHit(this.owner, {dmg: 2, poison:true}, game, this.box());
   }
   draw() {
-    const a = Math.min(1, this.life / 40, this.t / 10);
+    const a = Math.min(1, this.life / 40, this.t / 10), spread = this.big ? 3 : 1;
     ctx.save(); ctx.globalAlpha = 0.55 * a;
-    for (let i = 0; i < 6; i++) {
-      const ox = Math.sin(this.t * 0.05 + i * 1.7) * 45, oy = Math.cos(this.t * 0.04 + i * 2.1) * 30;
+    for (let i = 0; i < 6 * spread; i++) {
+      const ox = Math.sin(this.t * 0.05 + i * 1.7) * 45 * spread, oy = Math.cos(this.t * 0.04 + i * 2.1) * 30;
       const g = ctx.createRadialGradient(this.x + ox, this.y + oy, 4, this.x + ox, this.y + oy, 48);
       g.addColorStop(0, '#b070ff'); g.addColorStop(1, 'rgba(120,200,60,0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(this.x + ox, this.y + oy, 48, 0, Math.PI * 2); ctx.fill();
@@ -1448,11 +2141,15 @@ function overlap(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y 
 const game = {
   phase: 'title', fighters: [], projectiles: [], particles: [],
   hitstop: 0, shake: 0, timer: 99, frame: 0, round: 1, banner: '', bannerT: 0, paused: false,
-  sel: {1:{i:0, ok:false}, 2:{i:1, ok:false}}, selT: 0, previews: {},
+  sel: {1:{i:0, ok:false}, 2:{i:1, ok:false}}, selT: 0, previews: {}, rules: {...DEFAULT_RULES},
 
   toSelect() {
     this.phase = 'select'; this.selT = 0; this.previews = {};
-    this.sel[1].ok = this.sel[2].ok = false;
+    for (const p of [1, 2]) {   // whoever picked ランダム last time starts back on the ? tile
+      const s = this.sel[p];
+      if (s.rand) s.i = CHARS.length;
+      s.ok = false; s.rand = false;
+    }
     this.projectiles = []; this.particles = [];
   },
   startMatch() {
@@ -1463,8 +2160,8 @@ const game = {
   newRound(first) {
     if (first) { this.round = 1; this.fighters.forEach(f => f.wins = 0); }
     this.fighters.forEach(f => f.reset());
-    this.projectiles = []; this.particles = []; this.popups = [];
-    this.timer = 99; this.frame = 0;
+    this.projectiles = []; this.particles = []; this.popups = []; this.superFlash = null;
+    this.timer = this.rules.time || 99; this.frame = 0;
     this.phase = 'intro'; this.bannerT = 0;
   },
   popups: [],
@@ -1521,7 +2218,7 @@ const game = {
       } else if (hit1(p, 'kick')) { s.ok = false; if (s.rand) s.i = CHARS.length; s.rand = false; sfx('cancel'); }
     }
     this.syncPreviews();
-    if (pressed['Escape']) leaveToMenu();
+    if (pressed['Escape']) { if (mode === 'host') toLobby(); else leaveToMenu(); }
     if (this.sel[1].ok && this.sel[2].ok) {
       if (++this.selT === 1) { sfx('start'); announce('Here comes a new challenger!'); }
       if (this.selT > 40) this.startMatch();
@@ -1541,27 +2238,28 @@ const game = {
       else if (pressed['Enter'] || hit1(1, 'kick') || hit1(2, 'kick')) { this.toSelect(); sfx('ok'); }
       return;
     }
+    if (this.superFlash && --this.superFlash.t <= 0) this.superFlash = null;
     if (this.hitstop > 0) { this.hitstop--; return; }
     this.bannerT++;
     if (this.phase === 'intro') {
       if (this.bannerT === 1) {
         sfx('gong');
-        const last = this.fighters.every(f => f.wins === 1);
+        const last = this.rules.wins > 1 && this.fighters.every(f => f.wins === this.rules.wins - 1);
         announce(last ? 'Final round!' : `Round ${this.round}!`);
       }
       if (this.bannerT === 70) { sfx('fight'); announce('Fight!'); }
       if (this.bannerT > 110) this.phase = 'fight';
     }
-    if (this.phase === 'fight' && ++this.frame % 60 === 0 && this.timer > 0) {
+    if (this.phase === 'fight' && this.rules.time && ++this.frame % 60 === 0 && this.timer > 0) {
       this.timer--;
       if (this.timer <= 10 && this.timer > 0) sfx('tick');
       if (this.timer === 0) {
-        const [a, b] = this.fighters, ra = a.hp / a.c.hp, rb = b.hp / b.c.hp;
+        const [a, b] = this.fighters, ra = a.hp / a.maxHp, rb = b.hp / b.maxHp;
         this.endRound(ra === rb ? null : (ra > rb ? a : b), 'TIME UP');
       }
     }
     if (this.phase === 'roundEnd' && this.bannerT > 150) {
-      const champ = this.fighters.find(f => f.wins >= 2);
+      const champ = this.fighters.find(f => f.wins >= this.rules.wins);
       if (champ) {
         this.phase = 'matchEnd'; this.champ = champ; champ.state = 'win'; this.endT = 0;
         sfx('win'); announce(`Player ${champ.id} wins!`);
@@ -1573,7 +2271,8 @@ const game = {
     a.update(b, this); b.update(a, this);
     // body push
     const minD = (a.w + b.w) / 2;
-    if (Math.abs(a.x - b.x) < minD && Math.abs(a.y - b.y) < 100) {
+    const ghost = f => f.move === 'super' && f.moves.super.ghost && f.timer < f.moves.super.start + f.moves.super.active;   // 鳳凰天舞 flies through
+    if (Math.abs(a.x - b.x) < minD && Math.abs(a.y - b.y) < 100 && !ghost(a) && !ghost(b)) {
       const d = (minD - Math.abs(a.x - b.x)) / 2, s = a.x < b.x ? -1 : 1;
       a.x += s * d; b.x -= s * d;
       a.x = Math.max(40, Math.min(W - 40, a.x)); b.x = Math.max(40, Math.min(W - 40, b.x));
@@ -1591,6 +2290,20 @@ const game = {
     ctx.save();
     if (this.shake) ctx.translate((Math.random() - .5) * this.shake, (Math.random() - .5) * this.shake);
     drawStage();
+    const sf = this.phase !== 'title' && this.phase !== 'select' && this.superFlash;
+    if (sf) {   // SA2: the stage goes dark behind the fighters
+      ctx.fillStyle = `rgba(5,0,20,${Math.min(0.72, sf.t / 12)})`; ctx.fillRect(-20, -20, W + 40, H + 40);
+      const o = this.fighters[sf.id - 1];
+      if (o) {
+        ctx.save(); ctx.translate(o.x, o.y - 90 * o.c.size);
+        ctx.strokeStyle = 'rgba(255,230,140,.35)'; ctx.lineWidth = 3;
+        for (let i = 0; i < 16; i++) {
+          const a = i / 16 * Math.PI * 2 + sf.t * 0.04, r1 = 40 + (44 - sf.t) * 4, r2 = r1 + 120;
+          ctx.beginPath(); ctx.moveTo(Math.cos(a) * r1, Math.sin(a) * r1); ctx.lineTo(Math.cos(a) * r2, Math.sin(a) * r2); ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
     if (this.phase !== 'title' && this.phase !== 'select') {
       this.fighters.forEach(f => f.draw());
       this.projectiles.forEach(p => p.draw());
@@ -1606,6 +2319,7 @@ const game = {
       ctx.globalAlpha = 1;
     }
     ctx.restore();
+    // no name banner for SA2: the opponent should have to read the move itself, not a caption
     if (AU.muted) {
       ctx.font = 'bold 14px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.textAlign = 'right'; ctx.fillStyle = '#ff8';
       ctx.fillText('MUTE（M で解除）', W - 10, H - 8);
@@ -1630,7 +2344,11 @@ const game = {
       big(`${this.champ.c.name} WINS!`, this.champ.id === 1 ? '#6cf' : '#f66');
       ctx.font = '24px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
       ctx.fillText(`${this.champ.id}P の勝利！`, W/2, H/2 + 20);
-      ctx.fillText('パンチ: 同じキャラで再戦　／　キック: キャラ選択へ', W/2, H/2 + 60);
+      if (mode !== 'spectate') ctx.fillText('パンチ: 同じキャラで再戦　／　キック: キャラ選択へ', W/2, H/2 + 60);
+      if (mode === 'host' || mode === 'guest' || mode === 'spectate') {
+        ctx.font = '18px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#ccc';
+        ctx.fillText('左上の「◀ 戻る」で待機画面へ', W/2, H/2 + 95);
+      }
     }
     if (this.paused) {
       ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(0, 0, W, H);
@@ -1666,36 +2384,50 @@ function drawStage() {
 function drawHUD(g) {
   const [a, b] = g.fighters, bw = 334, by = 26, edge = 84;   // left edge leaves room for the 戻る button
   const bar = (f, x, flip) => {
-    const r = f.hp / f.c.hp, dr = f.dispHp / f.c.hp;
+    const r = f.hp / f.maxHp, dr = f.dispHp / f.maxHp;
     ctx.fillStyle = '#000'; ctx.fillRect(x - 3, by - 3, bw + 6, 28);
     ctx.fillStyle = '#7a1010'; ctx.fillRect(x, by, bw, 22);
     const dw = bw * dr, w = bw * r;
     ctx.fillStyle = '#ff9a2f'; ctx.fillRect(flip ? x + bw - dw : x, by, dw, 22);
     ctx.fillStyle = r > 0.3 ? '#ffd23f' : '#ff4a3a'; ctx.fillRect(flip ? x + bw - w : x, by, w, 22);
+    // guard durability, just under the HP bar
+    const gy = by + 28, gr = Math.max(0, f.guard ?? GUARD_MAX) / GUARD_MAX, gw = bw * gr;
+    const blink = Math.floor(performance.now() / 120) % 2;
+    ctx.fillStyle = '#000'; ctx.fillRect(x - 3, gy - 2, bw + 6, 11);
+    ctx.fillStyle = '#1a2a3a'; ctx.fillRect(x, gy, bw, 7);
+    ctx.fillStyle = f.crushed ? (blink ? '#ff6a2a' : '#7a2a10') : gr < 0.3 ? (blink ? '#ff4a3a' : '#ff9a2f') : '#6cf';
+    ctx.fillRect(flip ? x + bw - (f.crushed ? bw : gw) : x, gy, f.crushed ? bw : gw, 7);
+    ctx.font = 'bold 11px Anton, Impact, sans-serif'; ctx.textAlign = flip ? 'left' : 'right';
+    ctx.lineWidth = 3; ctx.strokeStyle = '#000'; ctx.fillStyle = '#fff';
+    const lx = flip ? x + 3 : x + bw - 3;   // label at the inner end of the bar
+    ctx.strokeText(f.crushed ? 'GUARD CRUSH' : 'GUARD', lx, gy + 15); ctx.fillText(f.crushed ? 'GUARD CRUSH' : 'GUARD', lx, gy + 15);
     // power meter
     const mx = flip ? x + bw - 218 : x, mw = 218 * f.meter / 100, cost = f.c.cost;
     ctx.fillStyle = '#000'; ctx.fillRect(mx - 2, H - 34, 222, 16);
     ctx.fillStyle = '#123'; ctx.fillRect(mx, H - 32, 218, 12);
-    ctx.fillStyle = f.meter >= cost ? '#3cf' : '#357';
+    const full = f.meter >= f.moves.super.cost, pulse = Math.floor(performance.now() / 150) % 2;
+    ctx.fillStyle = full ? (pulse ? '#ffd23f' : '#ff8a2a') : f.meter >= cost ? '#3cf' : '#357';
     ctx.fillRect(flip ? mx + 218 - mw : mx, H - 32, mw, 12);
     ctx.fillStyle = '#0008';
     for (let v = cost; v < 100; v += cost) ctx.fillRect(flip ? mx + 218 - 218 * v / 100 : mx + 218 * v / 100, H - 32, 2, 12);
-    ctx.font = '12px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#9cf'; ctx.textAlign = flip ? 'right' : 'left';
-    ctx.fillText(`POWER ／ 必殺: ${f.c.spName}`, flip ? x + bw : x, H - 38);
+    ctx.font = '12px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.textAlign = flip ? 'right' : 'left';
+    ctx.fillStyle = full ? '#ffd23f' : '#9cf';
+    ctx.fillText(full ? `SA2 発動OK！ ${f.moves.super.name}` : `POWER ／ 必殺: ${f.c.spName}`, flip ? x + bw : x, H - 38);
     // name & wins
     ctx.font = 'bold 20px Anton, Impact, sans-serif';
     ctx.fillStyle = f.id === 1 ? '#6cf' : '#f66';
-    ctx.fillText(f.id === 1 ? `1P  ${f.c.name}` : `${f.c.name}  2P`, flip ? x + bw : x, by + 46);
-    for (let i = 0; i < 2; i++) {
+    ctx.fillText(f.id === 1 ? `1P  ${f.c.name}` : `${f.c.name}  2P`, flip ? x + bw : x, by + 58);
+    for (let i = 0; i < g.rules.wins; i++) {
       const cx = flip ? x + bw - 140 - i * 22 : x + 140 + i * 22;
-      ctx.beginPath(); ctx.arc(cx, by + 40, 7, 0, Math.PI*2);
+      ctx.beginPath(); ctx.arc(cx, by + 52, 7, 0, Math.PI*2);
       ctx.fillStyle = i < f.wins ? '#ffd23f' : '#333'; ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.stroke();
     }
   };
   bar(a, edge, false); bar(b, W - edge - bw, true);
   ctx.fillStyle = '#000'; ctx.fillRect(W/2 - 36, 14, 72, 52);
   ctx.font = 'bold 44px Anton, Impact, sans-serif'; ctx.textAlign = 'center';
-  ctx.fillStyle = g.timer <= 10 ? '#ff4a3a' : '#fff'; ctx.fillText(String(g.timer).padStart(2, '0'), W/2, 58);
+  const inf = !g.rules.time;
+  ctx.fillStyle = !inf && g.timer <= 10 ? '#ff4a3a' : '#fff'; ctx.fillText(inf ? '∞' : String(g.timer).padStart(2, '0'), W/2, 58);
 }
 
 function drawTitle() {
@@ -1711,11 +2443,11 @@ function drawTitle() {
   ctx.font = '22px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#fff';
   ctx.fillText(`オンライン対戦 ・ ${CHARS.length}キャラ ・ 2ラウンド先取`, W/2, 204);
   ctx.font = '15px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#ddd';
-  ctx.fillText('しゃがみ＋キック＝足払い ／ 必殺技はPOWERゲージを消費', W/2, 232);
+  ctx.fillText('しゃがみ＋キック＝足払い ／ 必殺技はPOWERを消費 ／ SA2は必殺技2回分のPOWER', W/2, 232);
 }
 
 const SEL_COLS = 11;
-const STAT_MAX = {hp:[80, 135], power:[0.8, 1.3], speed:[2.8, 5.8], reach:[0.95, 1.9]};
+const STAT_MAX = {hp:[80 * HP_SCALE, 135 * HP_SCALE], power:[0.8, 1.3], speed:[2.8, 5.8], reach:[0.95, 1.9]};
 function statLevel(c, k) {
   const v = {hp:c.hp, power:c.dmg, speed:c.walk, reach:c.reach}[k], [lo, hi] = STAT_MAX[k];
   return Math.max(1, Math.min(5, Math.round(1 + 4 * (v - lo) / (hi - lo))));
@@ -1753,11 +2485,13 @@ function drawSelect(g) {
     ctx.fillText(c ? `${c.jp} ／ ${c.type}タイプ` : 'ランダム', x + 12, y + 53);
     ctx.font = '13px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#ddd';
     const desc = c ? c.desc : [`決定すると${CHARS.length}人の中から`, 'だれか1人が選ばれる。'];
-    desc.forEach((l, i) => ctx.fillText(l, x + 12, y + 73 + i * 17));
+    desc.forEach((l, i) => ctx.fillText(l, x + 12, y + 72 + i * 16));
     ctx.fillStyle = '#ffd23f';
-    ctx.fillText(c ? `必殺技: ${c.spName}（POWER ${c.cost}）` : '必殺技: ？？？', x + 12, y + 111);
+    ctx.fillText(c ? `必殺技: ${c.spName}（POWER ${c.cost}）` : '必殺技: ？？？', x + 12, y + 108);
+    ctx.fillStyle = '#ff9a5a';
+    ctx.fillText(c ? `SA2: ${SA2[c.name].name}（POWER ${Math.min(100, c.cost * 2)}）` : 'SA2: ？？？', x + 12, y + 125);
     [['体力','hp'],['攻撃力','power'],['スピード','speed'],['リーチ','reach']].forEach(([label, k], i) => {
-      const yy = y + 124 + i * 18;
+      const yy = y + 136 + i * 17;
       ctx.fillStyle = '#ccc'; ctx.fillText(label, x + 12, yy + 10);
       for (let j = 0; j < 5; j++) {
         ctx.fillStyle = c && j < statLevel(c, k) ? col : '#333';
@@ -1799,8 +2533,7 @@ function drawSelect(g) {
     ctx.textAlign = 'center'; ctx.font = '12px Anton, Impact, sans-serif'; ctx.fillStyle = '#fff';
     ctx.fillText(c ? c.name : 'RANDOM', x + cw/2, cy + ch - 4);
     for (const p of [1, 2]) {
-      const si = g.sel[p].rand && !g.sel[p].ok ? RAND : g.sel[p].i;
-      if (si !== i) continue;
+      if (g.sel[p].i !== i) continue;
       const blink = g.sel[p].ok || Math.floor(performance.now() / 250) % 2;
       ctx.strokeStyle = p === 1 ? '#3af' : '#f44'; ctx.lineWidth = blink ? 4 : 2;
       const o = p === 1 ? 0 : 5;
@@ -1831,6 +2564,7 @@ let netBanner = '';
 
 function startLocal(m) {
   mode = m; netBanner = m === 'cpu' ? 'CPU対戦' : '';
+  game.rules = {...DEFAULT_RULES};
   cpu.reset();
   showMenu(null);
   game.paused = false;
@@ -1842,6 +2576,7 @@ function leaveToMenu(msg) {
   if (/^#[a-z0-9]{4}$/i.test(location.hash)) try { history.replaceState(null, '', location.pathname + location.search); } catch (_) {}
   mode = 'menu'; netBanner = ''; game.paused = false;
   game.phase = 'title'; game.fighters = []; game.projectiles = []; game.particles = []; game.popups = [];
+  game.rules = {...DEFAULT_RULES};
   net.reset();
   if (wasNet) wasNet.leave().catch(() => {});
   showMenu('main', msg);
@@ -1866,12 +2601,17 @@ const cpu = {
     const [foe, me] = game.fighters;
     const dx = foe.x - me.x, dist = Math.abs(dx);
     const fwd = dx > 0 ? 'right' : 'left', back = dx > 0 ? 'left' : 'right';
+    if (me.state === 'down') {   // sometimes 受け身 away, otherwise get up guarding
+      if (me.stun === 20 && Math.random() < 0.4) o.pressed.kick = true;
+      if (me.stun < 6 && Math.random() < 0.6) { this.hold = {[back]: true}; this.holdT = 14; }
+    }
     if (this.holdT > 0) { this.holdT--; Object.assign(o.held, this.hold); return o; }
     this.hold = {}; this.holdT = 6 + (Math.random() * 8 | 0);
     const r = Math.random();
     const incoming = game.projectiles.some(p => p.owner === foe && !p.isMine && !p.isCloud &&Math.abs(p.x - me.x) < 260 && Math.sign(p.vx) === Math.sign(me.x - p.x));
     const foeAttacking = foe.state === 'attack' && dist < 170;
     const canSp = me.meter >= me.c.cost;
+    if (me.meter >= me.moves.super.cost && dist < 260 && r < 0.12) { o.pressed.super = true; return o; }
     if ((incoming || foeAttacking) && r < 0.55) {
       this.hold[back] = true;
       if (foe.move === 'sweep' || foe.move === 'cpunch') this.hold.down = true;
@@ -1898,17 +2638,19 @@ const cpu = {
 };
 
 // ---------- online (claude.ai room) ----------
-const ST = ['idle', 'walk', 'crouch', 'jump', 'attack', 'hit', 'knock', 'down', 'ko', 'win'];
-const MV = [null, 'punch', 'kick', 'cpunch', 'sweep', 'jpunch', 'jkick', 'special', 'riposte'];
+const ST = ['idle', 'walk', 'crouch', 'jump', 'attack', 'hit', 'knock', 'down', 'ko', 'win', 'wake', 'roll'];
+const MV = [null, 'punch', 'kick', 'cpunch', 'sweep', 'jpunch', 'jkick', 'special', 'riposte', 'super'];
 const PHASES = ['title', 'select', 'intro', 'fight', 'roundEnd', 'matchEnd'];
 const r1 = v => Math.round(v * 10) / 10;
 
 const net = {
   room: null, named: null, code: '', guestPeer: null, sawHost: false, joinT: 0,
-  events: [], evId: 0, lastEv: -1, lastC: null, counts: [0, 0, 0, 0, 0, 0, 0], pend: [0, 0, 0, 0, 0, 0, 0], sentKey: '', appliedSnap: null,
+  events: [], evId: 0, lastEv: -1, lastC: null, counts: [0, 0, 0, 0, 0, 0, 0, 0], pend: [0, 0, 0, 0, 0, 0, 0, 0], sentKey: '', appliedSnap: null,
   reset() {
     Object.assign(this, {named: null, code: '', guestPeer: null, sawHost: false, joinT: 0, events: [], evId: 0,
-      lastEv: -1, lastC: null, counts: [0, 0, 0, 0, 0, 0, 0], pend: [0, 0, 0, 0, 0, 0, 0], sentKey: '', appliedSnap: null});
+      isHost: false, myId: null, authPeer: null, cfg: null, lobbySig: '',
+      chatLog: [], chatOut: [], chatSeq: 0, chatSeen: new Set(), chatDirty: true, chatTick: 0, members: new Map(), membersReady: false,
+      lastEv: -1, lastC: null, counts: [0, 0, 0, 0, 0, 0, 0, 0], pend: [0, 0, 0, 0, 0, 0, 0, 0], sentKey: '', appliedSnap: null});
   },
 };
 function fxlog(ev) {
@@ -1924,29 +2666,52 @@ function makePeerRoom() {
     join(name, opts = {}) {
       return new Promise((resolve, reject) => {
         const hostId = 'kentoretsuden-' + name;
-        const conns = new Map();
+        // Star network: everyone connects to the host, and the host relays each member's presence to all the others,
+        // so every member sees the whole room (as on claude.ai). A match's snapshots (field s) are big and frequent,
+        // so the host only passes them on to that match's opponent and its spectators.
+        const conns = new Map();      // direct connections (the host: every member; a member: just the host)
+        const relayed = new Map();    // a member's view of the other members, as relayed by the host
         const hs = [];
         let mine = {}, myId = null, cached = null, sendT = null, done = false, closed = false;
         const snap = () => (cached = Object.freeze([
           {peer: myId, isMe: true, sameTab: true, presence: mine},
           ...[...conns.values()].filter(r => r.presence).map(r => ({peer: r.id, isMe: false, sameTab: false, presence: r.presence})),
+          ...[...relayed].map(([id, p]) => ({peer: id, isMe: false, sameTab: false, presence: p})),
         ]));
         const notify = () => { snap(); for (const h of hs) try { h({peers: cached}); } catch (_) {} };
+        const forTo = (from, p, to) => {
+          if (!p || !p.s || (to && (to.w === from || to.opp === from))) return p;
+          const {s, ...rest} = p; return rest;
+        };
+        const send = (r, msg) => { if (r.conn.open) try { r.conn.send(msg); } catch (_) {} };
         const flush = () => {
           sendT = null;
-          for (const r of conns.values()) if (r.conn.open) try { r.conn.send({p: mine}); } catch (_) {}
+          for (const r of conns.values()) send(r, {p: opts.host ? forTo(myId, mine, r.presence) : mine});
         };
         const attach = conn => {
           const r = {id: conn.peer, conn, presence: null};
           conns.set(conn.peer, r);
-          conn.on('open', () => { if (Object.keys(mine).length) try { conn.send({p: mine}); } catch (_) {} });
-          conn.on('data', d => {
-            if (!d || typeof d !== 'object' || !d.p || typeof d.p !== 'object') return;
-            const prev = r.presence; r.presence = d.p;
-            // a new participant, or a change of who they are, is a room change; everything else is just state
-            if (!prev || prev.role !== d.p.role || prev.g !== d.p.g) notify(); else snap();
+          conn.on('open', () => {
+            if (Object.keys(mine).length) send(r, {p: opts.host ? forTo(myId, mine, null) : mine});
+            if (opts.host) for (const o of conns.values()) if (o !== r && o.presence) send(r, {r: o.id, p: forTo(o.id, o.presence, null)});
           });
-          const gone = () => { if (conns.delete(conn.peer)) notify(); };
+          conn.on('data', d => {
+            if (!d || typeof d !== 'object') return;
+            if (!opts.host && typeof d.r === 'string') {   // another member, relayed by the host
+              if (d.gone) relayed.delete(d.r); else if (d.p && typeof d.p === 'object') relayed.set(d.r, d.p);
+              return notify();
+            }
+            if (!d.p || typeof d.p !== 'object') return;
+            r.presence = d.p;
+            if (opts.host) for (const o of conns.values()) if (o !== r) send(o, {r: r.id, p: forTo(r.id, d.p, o.presence)});
+            notify();
+          });
+          const gone = () => {
+            if (!conns.delete(conn.peer)) return;
+            if (opts.host) for (const o of conns.values()) send(o, {r: conn.peer, gone: 1});
+            else relayed.clear();   // lost the host: the room is gone
+            notify();
+          };
           conn.on('close', gone); conn.on('error', gone);
         };
         const api = {
@@ -1991,7 +2756,7 @@ function makeCode() {
 }
 
 async function createRoom() {
-  if (!net.room) return;
+  if (!net.room || !requireName()) return;
   setOnlineMsg('ルームを作っています…');
   try {
     let code, named;
@@ -2000,41 +2765,254 @@ async function createRoom() {
       try { named = await net.room.join('kf-' + code, {host: true}); break; }
       catch (e) { if (tries >= 2) throw e; }
     }
-    net.reset(); net.named = named; net.code = code;
-    mode = 'host'; netBanner = 'オンライン：あなたは 1P';
-    await named.presence({role: 'host', g: null, s: null});
-    named.onPeers(onPeersHost, onRoomError);
-    document.getElementById('wait-code').textContent = code.toUpperCase();
-    $('b-copy').hidden = false;
-    $('b-share').hidden = net.kind !== 'peer';   // a link only helps on the public website
-    setWaitMsg(net.kind === 'peer' ? '招待リンクを送ったら、この画面に戻って待っていてください。'
-      : '対戦相手を待っています…');
-    showMenu('wait');
+    net.reset(); net.named = named; net.code = code; net.isHost = true; net.cfg = {...DEFAULT_CFG};
+    await named.presence({role: 'host', nm: myName(), st: 'lobby', cfg: net.cfg});
+    named.onPeers(() => {}, onRoomError);
+    toLobby(net.kind === 'peer' ? 'ルームを作りました。招待リンクかコードを友達に送ってください。'
+      : 'ルームを作りました。コードを友達に伝えてください。');
   } catch (e) {
     mode = 'menu';
     setOnlineMsg(`ルームを作れませんでした（${(e && (e.type || e.message)) || '不明'}）。通信環境を確かめて、もう一度試してください。`, true);
   }
 }
-function onPeersHost(ch) {
-  if (mode !== 'host') return;
-  const peers = ch.peers;
-  if (!net.guestPeer) {
-    const g = peers.find(p => !p.isMe && p.presence && p.presence.role === 'guest');
-    if (g) {
-      // a guest's press counters start at zero when it joins
-      net.guestPeer = g.peer; net.lastC = [0, 0, 0, 0, 0, 0, 0]; net.pend = [0, 0, 0, 0, 0, 0, 0];
-      net.named.presence({g: g.peer}).catch(() => {});
-      showMenu(null); sfx('start');
-      game.sel[1].i = game.sel[1].i || 0; game.toSelect();
+
+// ---------- 待機画面 (room lobby) ----------
+// Everyone's presence says who they are and what they are doing:
+//   nm name, role 'host' | 'member', st 'lobby' | 'play' | 'watch',
+//   ch: whom I am challenging, acc: whose challenge I accepted, dec: whose challenge I turned down,
+//   opp/mt: my opponent and the match's simulating side (the challenger), w: whose match I am watching,
+//   cfg: the room's match settings (host only), s: match snapshots (simulating side), in: inputs (the other player).
+// Several matches can run at once: each is simulated by its challenger and watched by anyone who likes.
+const DEFAULT_CFG = {w: 2, t: 99, h: 100};
+const ZEROS8 = () => [0, 0, 0, 0, 0, 0, 0, 0];
+const rulesFromCfg = c => ({wins: c.w || 2, time: c.t ?? 99, hp: (c.h || 100) / 100});
+const setP = patch => { if (net.named) net.named.presence(patch).catch(() => {}); };
+function myName() {
+  const n = ($('pname').value || '').trim().slice(0, 8) || 'プレイヤー';
+  try { localStorage.setItem('kf-name', n); } catch (_) {}
+  return n;
+}
+// a name is needed before entering a room (it is what the others see in the 待機画面 and the chat)
+function requireName() {
+  if (($('pname').value || '').trim()) return true;
+  showMenu('online'); setOnlineMsg('先に「なまえ」を入れてください。', true);
+  try { $('pname').focus(); } catch (_) {}
+  return false;
+}
+function rename() {
+  const n = ($('lob-name').value || '').trim().slice(0, 8);
+  if (!n) { $('lob-name').value = myName(); return; }
+  const old = myName();
+  $('pname').value = n; myName();
+  if (n !== old) { setP({nm: n}); addChatLine(null, `名前を「${n}」に変えました`); sfx('ok'); }
+}
+
+// ---------- chat ----------
+// Each member keeps their last few messages in presence (chat: [[seq, text], ...]); every view gathers them,
+// in the order they arrive, into its own log. Joining late shows the last few lines from each member.
+const CHAT_KEEP = 5, CHAT_LOG_MAX = 60;
+function addChatLine(nm, text, mine) {
+  net.chatLog.push({nm, text, mine: !!mine});
+  if (net.chatLog.length > CHAT_LOG_MAX) net.chatLog.shift();
+  net.chatDirty = true;
+}
+function sendChat(text) {
+  text = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 50);
+  if (!text || !net.named || !net.myId) return;
+  net.chatSeq++;
+  net.chatOut = [...net.chatOut, [net.chatSeq, text]].slice(-CHAT_KEEP);
+  net.chatSeen.add(net.myId + ':' + net.chatSeq);
+  setP({chat: net.chatOut});
+  addChatLine(myName(), text, true); sfx('select');
+}
+function gatherChat(peers, myId) {
+  let heard = false;
+  for (const p of peers) {
+    if (p.peer === myId || !p.presence) continue;
+    const nm = p.presence.nm;
+    // who came and went
+    const before = net.members.get(p.peer);
+    if (nm && !before) { if (net.membersReady) addChatLine(null, `${san(nm)}が入りました`); }
+    else if (nm && before !== nm) addChatLine(null, `${san(before)}が名前を「${nm}」に変えました`);
+    if (nm) net.members.set(p.peer, nm);
+    const list = Array.isArray(p.presence.chat) ? p.presence.chat : [];
+    for (const m of list) {
+      if (!Array.isArray(m) || typeof m[1] !== 'string') continue;
+      const key = p.peer + ':' + m[0];
+      if (net.chatSeen.has(key)) continue;
+      net.chatSeen.add(key); addChatLine(nm || '???', m[1].slice(0, 50)); heard = true;
     }
-  } else if (!peers.some(p => p.peer === net.guestPeer)) {
-    net.guestPeer = null;
-    net.named.presence({g: null}).catch(() => {});
-    game.phase = 'title'; game.paused = false;
-    setWaitMsg('相手が抜けました。同じコードで次の相手を待っています…');
-    showMenu('wait');
+  }
+  for (const [id, nm] of net.members) if (!peers.some(p => p.peer === id)) { net.members.delete(id); addChatLine(null, `${san(nm)}が出ました`); }
+  net.membersReady = true;
+  if (heard && mode === 'lobby') sfx('select');
+}
+function renderChat() {
+  if (!net.chatDirty || $('m-lobby').hidden) return;
+  net.chatDirty = false;
+  const box = $('chat-log');
+  box.innerHTML = net.chatLog.length ? net.chatLog.map(l => l.nm === null ? `<div class="sys">― ${esc(l.text)}</div>`
+    : `<div class="${l.mine ? 'mine' : ''}"><span class="who">${esc(l.nm)}</span>${esc(l.text)}</div>`).join('')
+    : '<div class="sys">まだメッセージはありません。</div>';
+  box.scrollTop = box.scrollHeight;
+}
+try { document.getElementById('pname').value = localStorage.getItem('kf-name') || ''; } catch (_) {}
+const esc = t => String(t ?? '').replace(/[&<>"']/g, ch => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[ch]);
+const san = n => /さん$|様$|くん$|ちゃん$/.test(n || '') ? n : (n || '???') + 'さん';
+function lobbyMsg(t) { if (t !== undefined) $('lob-msg').textContent = t; }
+
+function resetView() {
+  game.phase = 'title'; game.paused = false; game.fighters = []; game.projectiles = []; game.particles = []; game.popups = [];
+  game.superFlash = null;
+}
+function toLobby(msg) {
+  mode = 'lobby'; netBanner = '';
+  resetView();
+  Object.assign(net, {guestPeer: null, authPeer: null, appliedSnap: null, lastEv: -1, events: [], lobbySig: ''});
+  setP({st: 'lobby', opp: null, mt: null, w: null, s: null, in: null, ch: null, acc: null, dec: null});
+  lobbyMsg(msg || '対戦したい相手に「対戦を申し込む」、試合中なら「観戦する」を押してください。');
+  showMenu('lobby');
+}
+function peerName(id) {
+  const p = net.named && net.named.peers().find(q => q.peer === id);
+  return (p && p.presence && p.presence.nm) || '???';
+}
+function startMatchAsHost(opp) {   // I challenged, so I run the match (1P)
+  mode = 'host';
+  Object.assign(net, {guestPeer: opp, authPeer: net.myId, lastC: ZEROS8(), pend: ZEROS8(), events: [], evId: 0});
+  game.rules = rulesFromCfg(net.cfg || DEFAULT_CFG);
+  net.chatOut = [];   // presence has to fit the match snapshots now (4 KB in all)
+  setP({st: 'play', opp, mt: net.myId, ch: null, acc: null, dec: null, w: null, s: null, chat: null});
+  netBanner = `オンライン：1P（相手 ${peerName(opp)}）`;
+  showMenu(null); sfx('start');
+  game.toSelect();
+}
+function startMatchAsGuest(auth) {   // I accepted, so I send my inputs (2P)
+  mode = 'guest';
+  Object.assign(net, {authPeer: auth, counts: ZEROS8(), sentKey: '', appliedSnap: null, lastEv: -1});
+  setP({st: 'play', opp: auth, mt: auth, ch: null, acc: null, dec: null, w: null, in: {h: 0, c: ZEROS8()}});
+  netBanner = `オンライン：2P（相手 ${peerName(auth)}）`;
+  resetView(); showMenu(null); sfx('start');
+}
+function startWatching(auth) {
+  const a = net.named.peers().find(q => q.peer === auth);
+  mode = 'spectate';
+  Object.assign(net, {authPeer: auth, appliedSnap: null, lastEv: -1});
+  setP({st: 'watch', w: auth, ch: null, acc: null, dec: null});
+  netBanner = `観戦中：${peerName(auth)} vs ${peerName(a && a.presence.opp)}`;
+  resetView(); showMenu(null); sfx('select');
+}
+
+// runs every frame while in a room: follows the other members and moves this view between lobby, match and spectating
+function netTick() {
+  if (!net.named || !['lobby', 'host', 'guest', 'spectate'].includes(mode)) return;
+  const peers = net.named.peers(), me = peers.find(p => p.sameTab);
+  if (!me) return;
+  const myId = net.myId = me.peer, my = me.presence || {};
+  const pr = id => { const p = id && peers.find(q => q.peer === id); return p && p.presence; };
+  if (++net.chatTick % 6 === 0) gatherChat(peers, myId);   // chat keeps arriving during matches too
+  renderChat();
+  if (!net.isHost) {
+    const h = peers.find(p => !p.sameTab && p.presence && p.presence.role === 'host');
+    if (h) { net.sawHost = true; if (h.presence.cfg) net.cfg = h.presence.cfg; }
+    else if (net.sawHost) return leaveToMenu('ホストがルームを抜けました。');
+    else if (performance.now() - net.joinT > 15000) return leaveToMenu('そのコードのルームが見つかりませんでした。');
+  }
+  if (mode === 'lobby') {
+    if (my.ch) {
+      const t = pr(my.ch);
+      if (!t) { setP({ch: null}); lobbyMsg('申し込んだ相手がルームを抜けました。'); }
+      else if (t.st && t.st !== 'lobby') { setP({ch: null}); lobbyMsg(`${san(t.nm)}は別の試合を始めました。`); }
+      else if (t.acc === myId) return startMatchAsHost(my.ch);
+      else if (t.dec === myId) { setP({ch: null}); lobbyMsg(`${san(t.nm)}に断られました。`); }
+      else if (t.ch === myId) {   // both asked each other: the lower id runs the match
+        if (myId < my.ch) return startMatchAsHost(my.ch);
+        setP({ch: null, acc: my.ch});
+      }
+    }
+    if (my.acc) {
+      const a = pr(my.acc);
+      if (a && a.st === 'play' && a.opp === myId) return startMatchAsGuest(my.acc);
+      if (!a || a.st === 'play' || a.ch !== myId) { setP({acc: null}); lobbyMsg('申し込みが取り消されました。'); }
+    }
+    if (my.dec && (pr(my.dec) || {}).ch !== myId) setP({dec: null});
+    renderLobby(peers, myId);
+  } else if (mode === 'host') {
+    const o = pr(net.guestPeer);
+    if (!o) return toLobby('相手がルームを抜けました。');
+    if (o.opp !== myId && o.acc !== myId) return toLobby(game.phase === 'matchEnd' ? '試合が終わりました。' : `${san(o.nm)}が試合をやめました。`);
+  } else {
+    const a = pr(net.authPeer);
+    if (!a) return toLobby(mode === 'spectate' ? '観戦していた試合が終わりました。' : '相手がルームを抜けました。');
+    if (a.st !== 'play' || (mode === 'guest' && a.opp !== myId))
+      return toLobby(mode === 'spectate' ? '観戦していた試合が終わりました。'
+        : game.phase === 'matchEnd' ? '試合が終わりました。' : `${san(a.nm)}が試合をやめました。`);
   }
 }
+
+function renderLobby(peers, myId) {
+  const ms = peers.filter(p => p.presence && p.presence.nm);
+  const my = (ms.find(p => p.peer === myId) || {}).presence || {};
+  const cfg = net.cfg || DEFAULT_CFG;
+  const sig = JSON.stringify([myId, cfg, net.isHost, net.sawHost,
+    ms.map(p => { const q = p.presence; return [p.peer, q.nm, q.role, q.st, q.opp, q.mt, q.ch, q.acc, q.dec, q.w]; })]);
+  if (sig === net.lobbySig) return;
+  net.lobbySig = sig;
+  // match settings: the host edits them, everyone else sees them
+  for (const [id, v] of [['r-bo', cfg.w], ['r-time', cfg.t], ['r-hp', cfg.h]]) {
+    const el = $(id); el.value = String(v); el.disabled = !net.isHost;
+  }
+  $('lob-rules-who').textContent = net.isHost ? '（ホストのあなたが決められます）' : '（ホストが決めます）';
+  if (!net.isHost && !net.sawHost) { $('lob-list').innerHTML = '<div class="lob-empty">ホストを探しています…</div>'; return; }
+  const tags = p => (p.presence.role === 'host' ? '<span class="lob-tag host">ホスト</span>' : '')
+    + (p.peer === myId ? '<span class="lob-tag you">あなた</span>' : '');
+  let html = '';
+  const matches = ms.filter(p => p.presence.st === 'play' && p.presence.mt === p.peer);
+  if (matches.length) {
+    html += '<p class="lob-sec">対戦中の試合</p>';
+    for (const a of matches) {
+      const o = ms.find(p => p.peer === a.presence.opp);
+      const n = ms.filter(p => p.presence.st === 'watch' && p.presence.w === a.peer).length;
+      const mine = a.peer === myId || a.presence.opp === myId;
+      html += `<div class="lob-row"><span class="lob-name">${esc(a.presence.nm)} vs ${esc(o ? o.presence.nm : '…')}</span>`
+        + `<span class="lob-st">観戦 ${n}人</span>`
+        + (mine ? '' : `<button class="btn" type="button" data-act="watch" data-id="${esc(a.peer)}">観戦する</button>`) + '</div>';
+    }
+  }
+  html += '<p class="lob-sec">待機中のメンバー</p>';
+  const free = ms.filter(p => p.presence.st !== 'play');
+  for (const p of free) {
+    const q = p.presence, me = p.peer === myId, id = esc(p.peer);
+    const asks = !me && q.ch === myId && my.dec !== p.peer;
+    let right;
+    if (me) right = `<span class="lob-st">${my.ch ? '申し込み中' : my.acc ? '開始を待っています…' : '待機中'}</span>`;
+    else if (q.st === 'watch') right = '<span class="lob-st">観戦中</span>';
+    else if (my.acc === p.peer) right = '<span class="lob-st">まもなく開始…</span>';
+    else if (asks) right = `<span class="lob-st">対戦の申し込み！</span><button class="btn primary" type="button" data-act="acc" data-id="${id}">受ける</button>`
+      + `<button class="btn ghost" type="button" data-act="dec" data-id="${id}">断る</button>`;
+    else if (my.ch === p.peer) right = `<span class="lob-st">返事を待っています…</span><button class="btn ghost" type="button" data-act="cancel" data-id="${id}">取り消す</button>`;
+    else right = `<span class="lob-st">${q.ch ? '申し込み中' : '待機中'}</span><button class="btn" type="button" data-act="ch" data-id="${id}">対戦を申し込む</button>`;
+    html += `<div class="lob-row${me ? ' me' : ''}${asks ? ' ask' : ''}"><span class="lob-name">${esc(q.nm)}</span>${tags(p)}${right}</div>`;
+  }
+  if (ms.length <= 1) html += '<div class="lob-empty">まだ誰もいません。コードか招待リンクを送って友達を呼んでください。</div>';
+  $('lob-list').innerHTML = html;
+}
+document.getElementById('lob-list').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]');
+  if (!b || mode !== 'lobby') return;
+  const id = b.dataset.id, act = b.dataset.act;
+  if (act === 'ch') { setP({ch: id, acc: null}); lobbyMsg(`${san(peerName(id))}に申し込みました。受けてもらえると試合が始まります。`); }
+  else if (act === 'cancel') { setP({ch: null}); lobbyMsg('申し込みを取り消しました。'); }
+  else if (act === 'acc') { setP({acc: id, ch: null, dec: null}); lobbyMsg('受けました。まもなく始まります…'); }
+  else if (act === 'dec') { setP({dec: id}); lobbyMsg(`${san(peerName(id))}の申し込みを断りました。`); }
+  else if (act === 'watch') { startWatching(id); return; }
+  net.lobbySig = ''; sfx('select');
+});
+for (const id of ['r-bo', 'r-time', 'r-hp']) document.getElementById(id).addEventListener('change', () => {
+  if (!net.isHost) return;
+  net.cfg = {w: +$('r-bo').value, t: +$('r-time').value, h: +$('r-hp').value};
+  setP({cfg: net.cfg}); sfx('select');
+});
 function remoteInput() {
   const o = {held:{}, pressed:{}};
   if (!net.named || !net.guestPeer) return o;
@@ -2047,22 +3025,25 @@ function remoteInput() {
     if (net.lastC) net.pend[i] = Math.min(4, net.pend[i] + ((inp.c[i] - net.lastC[i] + 1000) % 1000));
     if (net.pend[i] > 0) { o.pressed[a] = true; net.pend[i]--; }
   });
-  net.lastC = inp.c.slice(0, 7);
+  net.lastC = inp.c.slice(0, 8);
   return o;
 }
 function snapshot() {
   const g = game;
   const s = {
     ph: PHASES.indexOf(g.phase), t: g.timer, r: g.round, bt: g.bannerT, bn: g.banner, sh: r1(g.shake),
+    sf: g.superFlash ? [g.superFlash.t, g.superFlash.id] : 0,
     sel: [g.sel[1].i, g.sel[1].ok ? 1 : 0, g.sel[2].i, g.sel[2].ok ? 1 : 0, g.sel[1].rand ? 1 : 0, g.sel[2].rand ? 1 : 0],
     lw: g.lastWinner ? g.lastWinner.id : 0, ch: g.champ ? g.champ.id : 0,
+    ru: [g.rules.wins, g.rules.time, Math.round(g.rules.hp * 100)],
     f: g.fighters.map(f => [CHARS.indexOf(f.c), f.isAlt ? 1 : 0, r1(f.x), r1(f.y), f.facing, ST.indexOf(f.state),
       MV.indexOf(f.move), f.timer, r1(f.hp), Math.round(f.meter), f.crouch ? 1 : 0, f.blocking ? 1 : 0,
-      f.flash, f.frozen, f.rage, f.anim, f.wins, f.iron]),
-    // [kind, x, y, vx, owner, t, extra]  kind 0 = shot (extra: whose shot it is), 1 = mine, 2 = poison mist (extra: life)
-    pr: g.projectiles.map(p => p.isMine ? [1, r1(p.x), r1(p.y), 0, p.owner.id, p.t, 0]
-      : p.isCloud ? [2, r1(p.x), r1(p.y), 0, p.owner.id, p.t, p.life]
-      : [0, r1(p.x), r1(p.y), r1(p.vx), p.owner.id, p.t, p.pk]),
+      f.flash, f.frozen, f.rage, f.anim, f.wins, f.iron, f.mirror, Math.round(f.guard), f.crushed]),
+    // [kind, x, y, vx, owner, t, extra, extra2]
+    //   kind 0 = shot (extra: whose shot it is + 100 × which SA2 shot, extra2: life), 1 = mine (extra: bomb fuse), 2 = poison mist (extra: life, extra2: big)
+    pr: g.projectiles.map(p => p.isMine ? [1, r1(p.x), r1(p.y), 0, p.owner.id, p.t, p.fuse || 0]
+      : p.isCloud ? [2, r1(p.x), r1(p.y), 0, p.owner.id, p.t, p.life, p.big ? 1 : 0]
+      : [0, r1(p.x), r1(p.y), r1(p.vx), p.owner.id, p.t, p.pk + 100 * (p.src || 0), p.life]),
     ev: net.events,
   };
   return s;
@@ -2070,7 +3051,7 @@ function snapshot() {
 function hostSend() {
   if (mode !== 'host' || !net.named || !net.guestPeer) return;
   let s = snapshot();
-  if (JSON.stringify(s).length > 3600) s.ev = net.events.slice(-8);
+  if (JSON.stringify(s).length > 3200) s.ev = net.events.slice(-6);   // presence (snapshot + name etc.) must stay under 4 KB
   net.named.presence({s}).catch(() => {});
 }
 
@@ -2082,6 +3063,7 @@ async function joinRoom(raw) {
   // codes are shown in capitals but matched case-insensitively; full-width letters from a Japanese keyboard are folded too
   const code = String(raw || '').normalize('NFKC').replace(/\s+/g, '').toLowerCase();
   if (!/^[a-z0-9]{4}$/.test(code)) { showMenu('online'); setOnlineMsg('コードは英数字4文字です。', true); return; }
+  if (!requireName()) return;
   const token = net.joinToken = {};
   const deadline = performance.now() + JOIN_WAIT_MS;
   document.getElementById('wait-code').textContent = code.toUpperCase();
@@ -2109,29 +3091,12 @@ async function joinRoom(raw) {
       : `つながりませんでした（${(lastErr && (lastErr.type || lastErr.message)) || '不明'}）。Wi-Fiとモバイル回線を切り替えて試してください。`, true);
     return;
   }
-  net.reset(); net.named = named; net.code = code; net.joinT = performance.now();
-  mode = 'guest'; netBanner = 'オンライン：あなたは 2P';
-  await named.presence({role: 'guest', in: {h: 0, c: net.counts}});
-  named.onPeers(onPeersGuest, onRoomError);
-  setWaitMsg('ホストとつながりました。始まるのを待っています…');
+  net.reset(); net.named = named; net.code = code; net.joinT = performance.now(); net.isHost = false;
+  await named.presence({role: 'member', nm: myName(), st: 'lobby'});
+  named.onPeers(() => {}, onRoomError);
+  toLobby('ルームに入りました。');
 }
-function hostPeer() {
-  return net.named ? net.named.peers().find(p => !p.isMe && p.presence && p.presence.role === 'host') : null;
-}
-function onPeersGuest() {
-  if (mode !== 'guest' && mode !== 'spectate') return;
-  const h = hostPeer();
-  if (h) {
-    net.sawHost = true;
-    const me = net.named.peers().find(p => p.sameTab);
-    const taken = h.presence.g && me && h.presence.g !== me.peer;
-    mode = taken ? 'spectate' : 'guest';
-    netBanner = taken ? 'オンライン：観戦中' : 'オンライン：あなたは 2P';
-  } else if (net.sawHost) {
-    leaveToMenu('ホストがルームを抜けました。');
-  }
-}
-function onRoomError() { if (mode === 'host' || mode === 'guest' || mode === 'spectate') leaveToMenu('通信が切れました。'); }
+function onRoomError() { if (['lobby', 'host', 'guest', 'spectate'].includes(mode)) leaveToMenu('通信が切れました。'); }
 
 function guestSendInput() {
   if (mode !== 'guest' || !net.named) return;
@@ -2141,27 +3106,27 @@ function guestSendInput() {
   const key = h + ':' + net.counts.join(',');
   if (key !== net.sentKey) { net.sentKey = key; net.named.presence({in: {h, c: net.counts.slice()}}).catch(() => {}); }
 }
-function guestStep() {
-  const h = hostPeer();
-  if (!h && !net.sawHost && performance.now() - net.joinT > 12000) {
-    leaveToMenu('そのコードのルームが見つかりませんでした。'); return;
-  }
-  const s = h && h.presence && h.presence.s;
+function guestStep() {   // 2P and spectators draw the match from its simulating side's snapshots
+  const a = net.named && net.named.peers().find(p => p.peer === net.authPeer);
+  const s = a && a.presence && a.presence.s;
   if (s && s !== net.appliedSnap) { applySnapshot(s); net.appliedSnap = s; }
-  if (s && !$('m-wait').hidden) showMenu(null);
   tickFx();
 }
+const SUPER_CACHE = {};   // guest side: SA2 shot parameters by character, to draw the host's shots
 function applySnapshot(s) {
   const g = game;
   g.phase = PHASES[s.ph] || 'title';
   g.timer = s.t; g.round = s.r; g.bannerT = s.bt; g.banner = s.bn; g.shake = s.sh; g.paused = false;
+  g.superFlash = s.sf ? {t: s.sf[0], id: s.sf[1]} : null;
+  if (s.ru) g.rules = {wins: s.ru[0], time: s.ru[1], hp: s.ru[2] / 100};
   g.sel[1].i = s.sel[0]; g.sel[1].ok = !!s.sel[1]; g.sel[2].i = s.sel[2]; g.sel[2].ok = !!s.sel[3];
   g.sel[1].rand = !!s.sel[4]; g.sel[2].rand = !!s.sel[5];
   s.f.forEach((d, k) => {
     let f = g.fighters[k];
     if (!f || f.c !== CHARS[d[0]] || f.isAlt !== !!d[1]) { f = g.fighters[k] = new Fighter(k + 1, CHARS[d[0]], !!d[1]); f.dispHp = d[8]; }
     Object.assign(f, {x: d[2], y: d[3], facing: d[4], state: ST[d[5]], move: MV[d[6]], timer: d[7], hp: d[8], meter: d[9],
-      crouch: !!d[10], blocking: !!d[11], flash: d[12], frozen: d[13], rage: d[14], anim: d[15], wins: d[16], iron: d[17] || 0});
+      crouch: !!d[10], blocking: !!d[11], flash: d[12], frozen: d[13], rage: d[14], anim: d[15], wins: d[16], iron: d[17] || 0,
+      mirror: d[18] || 0, guard: d[19] ?? GUARD_MAX, crushed: d[20] || 0, maxHp: Math.round(f.c.hp * g.rules.hp)});
   });
   if (s.f.length === 0) g.fighters = [];
   g.lastWinner = g.fighters[s.lw - 1] || null;
@@ -2169,10 +3134,12 @@ function applySnapshot(s) {
   g.projectiles = s.pr.map(d => {
     const owner = g.fighters[d[4] - 1];
     if (!owner) return null;
-    if (d[0] === 1) return Object.assign(Object.create(Mine.prototype), {x: d[1], y: d[2], t: d[5], owner, isMine: true});
-    if (d[0] === 2) return Object.assign(Object.create(Cloud.prototype), {x: d[1], y: d[2], t: d[5], life: d[6], owner, isCloud: true});
-    return Object.assign(Object.create(Fireball.prototype),
-      {x: d[1], y: d[2], vx: d[3], t: d[5], owner, p: SPECIALS[CHARS[d[6]].special].proj});
+    if (d[0] === 1) return Object.assign(Object.create(Mine.prototype), {x: d[1], y: d[2], t: d[5], owner, isMine: true, fuse: d[6] || 0});
+    if (d[0] === 2) return Object.assign(Object.create(Cloud.prototype), {x: d[1], y: d[2], t: d[5], life: d[6], owner, isCloud: true, big: !!d[7]});
+    const ci = d[6] % 100, src = Math.floor(d[6] / 100);
+    const sup = src ? (SUPER_CACHE[ci] ||= buildSuper(CHARS[ci])) : null;
+    const p = src === 1 ? sup.proj : src === 2 ? sup.rain.proj : src === 3 ? sup.stream.proj : SPECIALS[CHARS[ci].special].proj;
+    return Object.assign(Object.create(Fireball.prototype), {x: d[1], y: d[2], vx: d[3], t: d[5], life: d[7] ?? 99, owner, p});
   }).filter(Boolean);
   for (const e of s.ev || []) {
     if (e[0] <= net.lastEv) continue;
@@ -2200,9 +3167,16 @@ function tickFx() {
 
 // ---------- menus (DOM over the canvas) ----------
 const $ = id => document.getElementById(id);
-const PANELS = ['m-main', 'm-online', 'm-wait', 'm-confirm'];
+const PANELS = ['m-main', 'm-online', 'm-wait', 'm-confirm', 'm-lobby'];
 function showMenu(which, msg) {
   for (const id of PANELS) $(id).hidden = id !== 'm-' + which;
+  document.body.classList.toggle('lobby', which === 'lobby');   // no touch pad over the 待機画面
+  if (which === 'lobby') {
+    $('lob-code').textContent = net.code.toUpperCase();
+    $('b-lshare').hidden = net.kind !== 'peer';   // a link only helps on the public website
+    $('lob-name').value = myName();
+    net.lobbySig = ''; net.chatDirty = true;
+  }
   if (which === 'main') {
     const n = $('main-note');
     n.textContent = msg || 'PCはキーボード、スマホは画面のパッドで操作します。';
@@ -2212,9 +3186,9 @@ function showMenu(which, msg) {
     : net.kind === 'claude' ? 'PCとスマホで対戦できます。claude.ai 版どうしでつながります（公開URL版の相手とはつながりません）。'
     : 'PCとスマホで対戦できます。相手も同じURLを開いて、ルームのコードで入ってください。', !net.room);
 }
-const menuBusy = () => !$('m-online').hidden || !$('m-wait').hidden;
+const menuBusy = () => !$('m-online').hidden || !$('m-wait').hidden || !$('m-lobby').hidden;
 function setOnlineMsg(t, warn) { const n = $('online-msg'); n.textContent = t; n.classList.toggle('warn', !!warn); }
-function setWaitMsg(t) { $('wait-msg').textContent = t; }
+function setWaitMsg(t) { $('wait-msg').textContent = t; lobbyMsg(t); }
 
 $('b-local').onclick = () => startLocal('local');
 $('b-cpu').onclick = () => startLocal('cpu');
@@ -2224,6 +3198,14 @@ $('b-create').onclick = () => createRoom();
 $('b-join').onclick = () => joinRoom($('code').value);
 $('code').addEventListener('keydown', e => { if (e.key === 'Enter') joinRoom($('code').value); });
 $('b-cancel').onclick = () => leaveToMenu();
+$('b-leave').onclick = () => { leaveToMenu(); sfx('cancel'); };
+$('b-chat').onclick = () => { sendChat($('chat-in').value); $('chat-in').value = ''; };
+$('chat-in').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) $('b-chat').onclick(); });
+$('chat-quick').addEventListener('click', e => { const b = e.target.closest('button'); if (b) sendChat(b.textContent); });
+$('b-rename').onclick = () => rename();
+$('lob-name').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) rename(); });
+$('b-lcopy').onclick = () => $('b-copy').onclick();
+$('b-lshare').onclick = () => $('b-share').onclick();
 $('b-copy').onclick = () => {
   const t = net.code.toUpperCase();
   try { navigator.clipboard.writeText(t).then(() => setWaitMsg('コピーしました。相手に送ってください。'), () => setWaitMsg('コード: ' + t)); }
@@ -2249,16 +3231,20 @@ $('b-mute').onclick = () => toggleMute();
 
 // 戻る: phones have no Esc key. Mid-match it asks first (and pauses offline games); elsewhere it goes straight back.
 let confirmPaused = false;
+// in a room: from a match or spectating it goes back to the 待機画面; from the 待機画面 it leaves the room
+const inMatch = () => mode === 'host' || mode === 'guest';
 $('b-menu').onclick = () => {
   if (!$('m-confirm').hidden) return;
+  if (mode === 'spectate') { toLobby(); sfx('cancel'); return; }
   const midMatch = ['intro', 'fight', 'roundEnd'].includes(game.phase);
-  if (!midMatch) { leaveToMenu(); sfx('cancel'); return; }
+  if (!midMatch) { if (inMatch()) toLobby(); else leaveToMenu(); sfx('cancel'); return; }
   confirmPaused = (mode === 'local' || mode === 'cpu') && !game.paused;
   if (confirmPaused) game.paused = true;
-  $('confirm-msg').textContent = mode === 'host' || mode === 'guest' ? '対戦をやめてルームから出ますか？' : '試合をやめてメニューに戻りますか？';
+  $('confirm-msg').textContent = inMatch() ? '試合をやめて待機画面に戻りますか？' : '試合をやめてメニューに戻りますか？';
+  $('b-yes').textContent = inMatch() ? '待機画面に戻る' : 'メニューに戻る';
   showMenu('confirm'); sfx('select');
 };
-$('b-yes').onclick = () => { confirmPaused = false; leaveToMenu(); sfx('cancel'); };
+$('b-yes').onclick = () => { confirmPaused = false; if (inMatch()) toLobby('試合をやめました。'); else leaveToMenu(); sfx('cancel'); };
 $('b-no').onclick = () => {
   showMenu(null);
   if (confirmPaused) game.paused = false;
@@ -2330,10 +3316,30 @@ $('b-pad').onclick = () => {
   stick.addEventListener('pointerup', end); stick.addEventListener('pointercancel', end);
   for (const btn of document.querySelectorAll('#btns button')) {
     const a = btn.dataset.a;
+    if (a === 'special') continue;
     btn.addEventListener('pointerdown', e => { e.preventDefault(); btn.setPointerCapture(e.pointerId); touch.held[a] = true; touch.pressed[a] = true; btn.classList.add('on'); });
     const up = () => { touch.held[a] = false; btn.classList.remove('on'); };
     btn.addEventListener('pointerup', up); btn.addEventListener('pointercancel', up);
   }
+  // 必殺: tap = SA1 (on release); press and slide upward = SA2 (the moment the finger has moved up enough)
+  const sp = document.querySelector('#btns button[data-a="special"]');
+  let spStart = null;
+  sp.addEventListener('pointerdown', e => {
+    e.preventDefault(); sp.setPointerCapture(e.pointerId);
+    spStart = {y: e.clientY, slid: false, id: e.pointerId}; sp.classList.add('on');
+  });
+  sp.addEventListener('pointermove', e => {
+    if (!spStart || e.pointerId !== spStart.id || spStart.slid) return;
+    if (spStart.y - e.clientY > Math.max(24, sp.offsetHeight * 0.35)) {
+      spStart.slid = true; touch.pressed.super = true; sp.classList.add('sa2');
+    }
+  });
+  const spUp = e => {
+    if (!spStart || e.pointerId !== spStart.id) return;
+    if (!spStart.slid && e.type === 'pointerup') touch.pressed.special = true;
+    spStart = null; sp.classList.remove('on', 'sa2');
+  };
+  sp.addEventListener('pointerup', spUp); sp.addEventListener('pointercancel', spUp);
   $('touch').addEventListener('contextmenu', e => e.preventDefault());
 })();
 
@@ -2345,9 +3351,11 @@ function gatherInputs() {
   else { ctrl[1] = localInput(); ctrl[2] = {held:{}, pressed:{}}; }
 }
 function step() {
+  inputFrame++;
   gatherInputs();
   if (mode === 'guest' || mode === 'spectate') { guestSendInput(); guestStep(); }
-  else { game.update(); hostSend(); }
+  else if (mode !== 'lobby') { game.update(); hostSend(); }
+  netTick();
   for (const k in pressed) delete pressed[k];
   touch.pressed = {};
 }
@@ -2371,7 +3379,14 @@ requestAnimationFrame(loop);
   if (!$('m-online').hidden) showMenu('online');
   // opened from an invite link (…/#ABCD): join that room right away
   const m = /^#([a-z0-9]{4})$/i.exec(location.hash);
-  if (m && net.room && mode === 'menu') { $('code').value = m[1].toUpperCase(); joinRoom(m[1]); }
+  if (m && net.room && mode === 'menu') {
+    $('code').value = m[1].toUpperCase();
+    if (($('pname').value || '').trim()) joinRoom(m[1]);   // name remembered from before: straight in
+    else {
+      showMenu('online'); setOnlineMsg('招待されました！「なまえ」を入れて「コードで入る」を押してください。');
+      try { $('pname').focus(); } catch (_) {}
+    }
+  }
 })();
 </script>
 
