@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="15キャラの2D格闘ゲーム。URLを開いてルームコードを入れるだけで、スマホとPCでオンライン対戦できます。">
+<meta name="description" content="30キャラの2D格闘ゲーム。URLを開いてルームコードを入れるだけで、スマホとPCでオンライン対戦できます。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="拳闘列伝">
-<meta property="og:description" content="スマホでもPCでも、URLを開いてルームコードで対戦！15キャラの2D格闘ゲーム。">
+<meta property="og:description" content="スマホでもPCでも、URLを開いてルームコードで対戦！30キャラの2D格闘ゲーム。">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -219,7 +219,9 @@ addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 // every source (keyboard sets, touch pad, network, CPU) is folded into ctrl[1] / ctrl[2] each frame
 const touch = {held:{}, pressed:{}};
 const ctrl = {1:{held:{}, pressed:{}}, 2:{held:{}, pressed:{}}};
-const held = (p, a) => !!ctrl[p].held[a];
+// opposite directions held together cancel out (no walking forward while guarding with left+right)
+const OPPOSITE = {left: 'right', right: 'left', up: 'down', down: 'up'};
+const held = (p, a) => !!ctrl[p].held[a] && !(OPPOSITE[a] && ctrl[p].held[OPPOSITE[a]]);
 const hit1 = (p, a) => !!ctrl[p].pressed[a];
 function readKeys(sets) {
   const o = {held:{}, pressed:{}};
@@ -317,6 +319,8 @@ const SFX = {
   reflect:  () => { tone('sine', 2400, 2400, 0.3, 0.15); tone('sine', 3600, 3600, 0.25, 0.08); noise(0.06, 0.3, 6000, 3000, 'highpass'); },
   mine:     () => { tone('square', 1500, 1500, 0.03, 0.1); tone('square', 1500, 1500, 0.03, 0.1, 0.08); noise(0.06, 0.15, 400, 200, 'lowpass'); },
   boom:     () => { noise(1.0, 0.8, 1800, 50, 'lowpass', 0.8); tone('sine', 90, 25, 0.9, 0.6); noise(0.15, 0.4, 3000, 800, 'bandpass', 1); },
+  heal:     () => { [784, 988, 1175, 1568].forEach((f, i) => tone('sine', f, f, 0.5, 0.09, i * 0.08)); },
+  mist:     () => { noise(0.7, 0.3, 3000, 600, 'bandpass', 0.8); tone('sine', 300, 180, 0.6, 0.06); },
   clash:    () => { tone('square', 1800, 600, 0.2, 0.12); noise(0.25, 0.4, 3000, 500, 'bandpass', 1); },
 };
 function sfx(name) {
@@ -375,7 +379,7 @@ const CHARS = [
    desc:['ガードできない投げを持つ女子レスラー。', '掴めば大ダメージ。外すと隙だらけ。'],
    body:'#c03080', accent:'#ffd040', skin:'#f6cfa5', hair:'long', hairColor:'#7a2a50',
    alt:{body:'#208070', accent:'#ffffff'},
-   hp:125, walk:3.8, back:3.0, jump:15, size:1.08, bulk:1.15, dmg:1.15, reach:1.0, speed:0, cost:25},
+   hp:125, walk:3.8, back:3.0, jump:15, size:1.08, bulk:1.15, dmg:1.05, reach:1.0, speed:0, cost:25},
   {name:'GENSAI', jp:'ゲンサイ', type:'当て身', special:'counter', spName:'柳受け',
    desc:['打撃も投げも受け止め、倍返しで投げる。', '相手のPOWERも奪う。空振りは隙だらけ。'],
    body:'#4a5a78', accent:'#f0f0f0', skin:'#e8b890', hair:'old', hairColor:'#f4f4f4',
@@ -416,6 +420,81 @@ const CHARS = [
    body:'#e07020', accent:'#333333', skin:'#e8b088', hair:'helmet', hairColor:'#ffd020',
    alt:{body:'#2070e0', accent:'#dddddd'},
    hp:105, walk:3.4, back:2.8, jump:16, size:1.02, bulk:1.1, dmg:1, reach:1, speed:1, cost:25},
+  {name:'AZUSA', jp:'アズサ', type:'射撃', special:'arrows', spName:'三連矢',
+   desc:['弓を操る山の狩人。', '三連矢は上・中・下の3本を同時に撃つ。'],
+   body:'#2e6b3a', accent:'#c9a227', skin:'#f6d2b0', hair:'ponytail', hairColor:'#3a2410',
+   alt:{body:'#6b2e4a', accent:'#e0e0e0'},
+   hp:90, walk:3.8, back:3.4, jump:17, size:0.95, bulk:0.85, dmg:0.9, reach:1.05, speed:0, cost:25},
+  {name:'KAITO', jp:'カイト', type:'戻り弾', special:'boomerang', spName:'ブーメラン',
+   desc:['南の島のブーメラン使い。', '行きと帰りで2回当たる。'],
+   body:'#1f6fa8', accent:'#f2c14e', skin:'#d9a070', hair:'cap', hairColor:'#d03030',
+   alt:{body:'#a8571f', accent:'#4ef2c1'},
+   hp:98, walk:4.2, back:3.4, jump:17, size:1, bulk:1, dmg:1, reach:1, speed:0, cost:25},
+  {name:'SEIRA', jp:'セイラ', type:'回復', special:'heal', spName:'癒しの祈り',
+   desc:['祈りで傷を癒やすシスター。', '回復中は無防備。距離をとってから使おう。'],
+   body:'#f0eadc', accent:'#4aa3df', skin:'#fbe3cf', hair:'long', hairColor:'#e8d27a',
+   alt:{body:'#2a2a3a', accent:'#e0b040'},
+   hp:96, walk:3.6, back:3.2, jump:16, size:0.93, bulk:0.85, dmg:0.95, reach:1, speed:0, cost:40},
+  {name:'RIN', jp:'リン', type:'下段', special:'slide', spName:'スライディング',
+   desc:['俊足のサッカー少年。', 'スライディングは下段。しゃがみガードで防げ。'],
+   body:'#ff7a1a', accent:'#222222', skin:'#f1c08f', hair:'spiky', hairColor:'#2a2a2a',
+   alt:{body:'#1a8aff', accent:'#ffffff'},
+   hp:90, walk:5.2, back:4.2, jump:18, size:0.92, bulk:0.85, dmg:0.92, reach:1, speed:-1, cost:20},
+  {name:'DAIGORO', jp:'ダイゴロウ', type:'地震', special:'stomp', spName:'四股踏み',
+   desc:['地面を揺らす大横綱。', '四股踏みは広い範囲に届く下段。跳んでかわせ。'],
+   body:'#e8b088', accent:'#3a3aa0', skin:'#e8b088', hair:'mage', hairColor:'#1a1a1a',
+   alt:{body:'#e8b088', accent:'#a03a3a'},
+   hp:140, walk:2.6, back:2.0, jump:13, size:1.2, bulk:1.5, dmg:1.2, reach:0.95, speed:2, cost:30},
+  {name:'TETSUZAN', jp:'テツザン', type:'鉄壁', special:'iron', spName:'金剛身',
+   desc:['鋼の体を持つ武僧。', '金剛身の間はダメージ半分でひるまない。'],
+   body:'#8a5a2a', accent:'#e8c050', skin:'#d9a070', hair:'bald', hairColor:'#000',
+   alt:{body:'#4a4a5a', accent:'#c05050'},
+   hp:112, walk:3.0, back:2.6, jump:15, size:1.1, bulk:1.2, dmg:1.05, reach:1, speed:1, cost:35},
+  {name:'LUNA', jp:'ルナ', type:'吸収', special:'drain', spName:'吸血',
+   desc:['夜を生きる吸血鬼。', '吸血が当たると与えたダメージ分回復する。'],
+   body:'#2a1a3a', accent:'#c02040', skin:'#f2e6ee', hair:'slick', hairColor:'#111111',
+   alt:{body:'#f0f0f0', accent:'#202020'},
+   hp:92, walk:4.0, back:3.6, jump:18, size:0.98, bulk:0.85, dmg:0.95, reach:1, speed:0, cost:25},
+  {name:'MAMUSHI', jp:'マムシ', type:'毒', special:'mist', spName:'毒霧',
+   desc:['毒を操る忍び。', '毒霧の中にいる相手は少しずつ体力が減る。'],
+   body:'#3f5a24', accent:'#a0e040', skin:'#d6c9a0', hair:'ninja', hairColor:'#2f4a1a',
+   alt:{body:'#5a243f', accent:'#e040a0'},
+   hp:95, walk:3.8, back:3.4, jump:17, size:1, bulk:0.9, dmg:0.95, reach:1, speed:0, cost:25},
+  {name:'ARMA', jp:'アルマ', type:'突進', special:'roll', spName:'ローリング',
+   desc:['丸まって転がる曲芸師。', 'ローリングは何度も当たりながら突っ込む。'],
+   body:'#a07a4a', accent:'#5a3a1a', skin:'#e0b890', hair:'afro', hairColor:'#3a2010',
+   alt:{body:'#4a7aa0', accent:'#1a3a5a'},
+   hp:105, walk:3.6, back:3.0, jump:16, size:1, bulk:1.15, dmg:1, reach:0.95, speed:0, cost:25},
+  {name:'VOID', jp:'ヴォイド', type:'重力', special:'gravity', spName:'重力球',
+   desc:['重力を操る謎の男。', '重力球で相手を引き寄せ、近ければ叩きつける。'],
+   body:'#1a1a2e', accent:'#9a5aff', skin:'#c8c0e0', hair:'hood', hairColor:'#2a1a4a',
+   alt:{body:'#2e1a1a', accent:'#ff5a9a'},
+   hp:98, walk:3.4, back:3.0, jump:16, size:1, bulk:0.95, dmg:1, reach:1, speed:0, cost:30},
+  {name:'AYAME', jp:'アヤメ', type:'連射', special:'kunai', spName:'クナイ',
+   desc:['素早いくノ一。', 'クナイは速くてPOWER消費が少ない。連発で削れ。'],
+   body:'#5a1a3a', accent:'#e0e0e0', skin:'#f6d2b0', hair:'ninja', hairColor:'#5a1a3a',
+   alt:{body:'#1a3a5a', accent:'#ffd040'},
+   hp:88, walk:4.8, back:4.0, jump:18, size:0.93, bulk:0.85, dmg:0.9, reach:1, speed:-1, cost:10},
+  {name:'HOMURA', jp:'ホムラ', type:'炎', special:'blaze', spName:'火炎陣',
+   desc:['炎をまとう格闘家。', '火炎陣は全身を包む炎。触れた相手を焼く。'],
+   body:'#b02010', accent:'#ffb020', skin:'#f1c08f', hair:'spiky', hairColor:'#ff5010',
+   alt:{body:'#1040b0', accent:'#40d0ff'},
+   hp:100, walk:3.8, back:3.2, jump:17, size:1, bulk:1, dmg:1, reach:1, speed:0, cost:30},
+  {name:'TOKI', jp:'トキ', type:'旋風', special:'whirl', spName:'旋風脚',
+   desc:['竜巻のような蹴りの名手。', '旋風脚は回りながら前へ進み、何度も当たる。'],
+   body:'#2a7a7a', accent:'#f0f0f0', skin:'#f1c08f', hair:'band', hairColor:'#222222',
+   alt:{body:'#7a2a7a', accent:'#ffd040'},
+   hp:96, walk:4.2, back:3.4, jump:17, size:0.98, bulk:0.95, dmg:1, reach:1.05, speed:0, cost:25},
+  {name:'BLITZ', jp:'ブリッツ', type:'拳速', special:'dashpunch', spName:'ダッシュストレート',
+   desc:['拳ひとつで成り上がったボクサー。', 'パンチが速い。必殺技で一気に間合いを詰める。'],
+   body:'#c02020', accent:'#ffffff', skin:'#b87a50', hair:'mohawk', hairColor:'#ffd020',
+   alt:{body:'#2040c0', accent:'#ffd020'},
+   hp:102, walk:4.4, back:3.6, jump:15, size:1.02, bulk:1.05, dmg:1.05, reach:0.95, speed:-2, cost:25},
+  {name:'GAMMA', jp:'ガンマ', type:'怪獣', special:'breath', spName:'火炎ブレス',
+   desc:['山から来た怪獣。', '火炎ブレスは近くを焼き続ける。'],
+   body:'#3a7a3a', accent:'#ffcc33', skin:'#4a9a4a', hair:'dino', hairColor:'#2a5a2a',
+   alt:{body:'#5a5a6a', accent:'#66ccff'},
+   hp:125, walk:2.8, back:2.4, jump:13, size:1.2, bulk:1.35, dmg:1.1, reach:1, speed:2, cost:30},
 ];
 
 // ---------- attacks ----------
@@ -431,7 +510,7 @@ const BASE_MOVES = {
 const SPECIALS = {
   fireball: {start:14, active:1, rec:22, proj:{speed:8,   dmg:12, scale:1,   colors:['#bff','#3af']}},
   slowfire: {start:18, active:1, rec:26, proj:{speed:4.2, dmg:15, scale:1.5, colors:['#ffd27a','#f60']}},
-  tackle:   {start:10, active:20, rec:18, dmg:13, stun:20, push:10, knock:true, box:{x:5, y:-125, w:60, h:100}},
+  tackle:   {start:10, active:20, rec:18, rush:10.5, dmg:13, stun:20, push:10, knock:true, box:{x:5, y:-125, w:60, h:100}},
   uppercut: {start:3, active:16, rec:8, dmg:16, stun:20, push:5, knock:true, inv:14, rising:true, box:{x:10, y:-170, w:80, h:145}},
   electric: {start:8, active:36, rec:18, dmg:4, stun:14, push:2, multi:9, box:{center:true, y:-160, w:170, h:165}},
   teleport: {start:12, active:6, rec:14, dmg:9, stun:18, push:8, inv:12, box:{x:20, y:-115, w:60, h:70}},
@@ -444,6 +523,21 @@ const SPECIALS = {
   beam:     {start:22, active:30, rec:20, dmg:3, stun:12, push:1, multi:5, ranged:true, beam:true, box:{x:30, y:-112, w:0, h:30}},
   reflect:  {start:2, active:32, rec:8, hitUntil:6, dmg:10, stun:18, push:12, reflect:true, box:{x:10, y:-140, w:70, h:130}},
   mine:     {start:12, active:1, rec:16},
+  arrows:   {start:12, active:1, rec:22, volley:[-130, -95, -45], proj:{speed:9, dmg:5, scale:0.55, colors:['#fff6d0','#c9a227'], arrow:true}},
+  boomerang:{start:12, active:1, rec:20, proj:{speed:9, dmg:7, scale:0.8, colors:['#ffe9a0','#c08020'], boomerang:true}},
+  heal:     {start:28, active:1, rec:14, heal:16},
+  slide:    {start:5, active:16, rec:16, rush:9, dmg:11, stun:20, push:6, knock:true, low:true, box:{x:0, y:-40, w:75, h:40}},
+  stomp:    {start:18, active:1, rec:22, quake:330},
+  iron:     {start:12, active:1, rec:10},
+  drain:    {start:6, active:6, rec:20, dmg:12, stun:18, push:6, drain:true, box:{x:10, y:-120, w:80, h:70}},
+  mist:     {start:14, active:1, rec:18},
+  roll:     {start:8, active:30, rec:16, rush:8, multi:6, dmg:3, stun:12, push:3, box:{x:-10, y:-75, w:75, h:75}},
+  gravity:  {start:14, active:40, rec:16, pull:true},
+  kunai:    {start:6, active:1, rec:12, cd:18, proj:{speed:14, dmg:6, scale:0.5, colors:['#ffffff','#9aa4b0'], kunai:true}},
+  blaze:    {start:8, active:32, rec:18, dmg:5, stun:14, push:3, multi:8, box:{center:true, y:-170, w:190, h:175}},
+  whirl:    {start:6, active:24, rec:10, multi:7, dmg:4, stun:14, push:4, rising:true, box:{x:-20, y:-115, w:115, h:60}},
+  dashpunch:{start:6, active:16, rec:16, rush:14, dmg:13, stun:20, push:14, box:{x:20, y:-125, w:60, h:30}},
+  breath:   {start:16, active:40, rec:18, dmg:3, stun:12, push:1, multi:4, ranged:true, beam:true, len:230, box:{x:30, y:-112, w:0, h:36}},
 };
 const RIPOSTE = {start:1, active:1, rec:16};
 
@@ -474,7 +568,7 @@ class Fighter {
   reset() {
     Object.assign(this, {x:this.startX, y:GROUND, vx:0, vy:0, hp:this.c.hp, dispHp:this.c.hp, meter:50,
       facing: this.id === 1 ? 1 : -1, state:'idle', timer:0, move:null, hasHit:false,
-      crouch:false, blocking:false, stun:0, anim:0, flash:0, fireCd:0, usedDJ:false, frozen:0, rage:0, blockstun:false});
+      crouch:false, blocking:false, stun:0, anim:0, flash:0, fireCd:0, usedDJ:false, frozen:0, rage:0, iron:0, blockstun:false});
   }
   reflecting() {
     const mv = this.move === 'special' && this.moves.special;
@@ -488,9 +582,12 @@ class Fighter {
   attackBox() {
     const b = this.moves[this.move].box, s = this.c.size;
     if (b.center) return {x:this.x - b.w/2, y:this.y + b.y, w:b.w, h:b.h};
-    if (this.moves[this.move].beam) {   // beam reaches the screen edge
-      const x0 = this.x + b.x * this.facing;
-      return this.facing === 1 ? {x:x0, y:this.y + b.y, w:W - x0, h:b.h} : {x:0, y:this.y + b.y, w:x0, h:b.h};
+    const mvd = this.moves[this.move];
+    if (mvd.beam) {   // a beam reaches the screen edge; a breath stops at its length
+      const x0 = this.x + b.x * this.facing, len = mvd.len ? mvd.len * s : W;
+      if (this.facing === 1) return {x:x0, y:this.y + b.y, w:Math.min(W - x0, len), h:b.h};
+      const left = Math.max(0, x0 - len);
+      return {x:left, y:this.y + b.y, w:x0 - left, h:b.h};
     }
     const x = this.facing === 1 ? this.x + b.x - 25*s : this.x - b.x + 25*s - b.w;
     return {x, y:this.y + b.y, w:b.w, h:b.h};
@@ -503,6 +600,7 @@ class Fighter {
     if (this.fireCd) this.fireCd--;
     if (this.frozen && (this.state !== 'hit' || !--this.frozen)) this.frozen = 0;
     if (this.rage) this.rage--;
+    if (this.iron) this.iron--;
     this.dispHp += (this.hp - this.dispHp) * 0.08;
     const p = this.id, c = this.c, canAct = game.phase === 'fight';
 
@@ -616,14 +714,42 @@ class Fighter {
         sfx('mine');
       }
       if (c.special === 'reflect' && this.timer === mv.start) sfx('stance');
+      if (c.special === 'breath' && this.timer === mv.start) sfx('flame');
+      if (c.special === 'breath' && active && this.timer % 8 === 0) sfx('flame');
+      if (c.special === 'blaze' && active && this.timer % 10 === 0) sfx('flame');
+      if (c.special === 'heal' && this.timer === 1) { sfx('stance'); game.spark(this.x, this.y - 80 * c.size, '#9fffb0', 8); }
       if (this.timer === mv.start) {
-        this.meter -= c.cost; this.fireCd = 40;
+        this.meter -= c.cost; this.fireCd = mv.cd || 40;
         if (mv.proj) {
-          game.projectiles.push(new Fireball(this, this.x + this.facing * 50 * c.size, this.y - 95 * c.size, mv.proj));
-          sfx({slowfire:'flame', ice:'ice', rocket:'rocket'}[c.special] || 'fire');
+          const ys = mv.volley || [-95];
+          for (const dy of ys) game.projectiles.push(new Fireball(this, this.x + this.facing * 50 * c.size, this.y + dy * c.size, mv.proj));
+          sfx({slowfire:'flame', ice:'ice', rocket:'rocket', arrows:'swish', boomerang:'swishL', kunai:'swish'}[c.special] || 'fire');
         }
+        if (mv.heal) {
+          const gain = Math.min(mv.heal, c.hp - this.hp);
+          this.hp += gain;
+          game.popup('+' + gain, this.x, this.y - 170 * c.size, '#8fff9f');
+          game.spark(this.x, this.y - 80 * c.size, '#8fff9f', 22); sfx('heal');
+        }
+        if (mv.quake) {   // shockwave along the floor: hits a grounded opponent in range, jump to avoid
+          for (let k = 1; k <= 6; k++) for (const d of [-1, 1]) game.spark(this.x + d * k * mv.quake / 6, GROUND - 6, '#c8a070', 3);
+          game.shake = 14; sfx('boom');
+          if (foe.onGround && Math.abs(foe.x - this.x) < mv.quake * c.size && !foe.invuln())
+            foe.takeHit(this, {dmg:Math.round(12 * c.dmg), stun:20, push:6, knock:true, low:true, ranged:true}, game, foe.hurtbox());
+        }
+        if (c.special === 'iron') {
+          this.iron = 300; game.popup('金剛身!', this.x, this.y - 180 * c.size, '#e8c050');
+          game.spark(this.x, this.y - 80 * c.size, '#e8c050', 24); sfx('armor'); sfx('gong');
+        }
+        if (c.special === 'mist') {
+          game.projectiles.forEach(p => { if (p.isCloud && p.owner === this) p.dead = true; });
+          game.projectiles.push(new Cloud(this, Math.max(60, Math.min(W - 60, this.x + this.facing * 130 * c.size))));
+          sfx('mist');
+        }
+        if (c.special === 'whirl') { this.vy = -8; this.vx = 6 * this.facing; this.y -= 1; sfx('rise'); }
+        if (c.special === 'gravity') sfx('charge');
+        if (mv.rush) sfx(c.special === 'dashpunch' ? 'swishL' : 'rush');
         if (c.special === 'uppercut') { this.vy = -17; this.vx = 2.5 * this.facing; this.y -= 1; sfx('rise'); }
-        if (c.special === 'tackle') sfx('rush');
         if (c.special === 'teleport') {
           game.spark(this.x, this.y - 60, '#556', 14);
           const side = this.x < foe.x ? 1 : -1;
@@ -634,7 +760,17 @@ class Fighter {
         }
       }
       if (c.special === 'teleport' && this.timer === 3) { game.spark(this.x, this.y - 60, '#556', 10); sfx('vanish'); }
-      if (c.special === 'tackle') this.vx = active && !this.hasHit ? 10.5 * this.facing : this.vx * 0.7;
+      // dashing moves keep moving while active; single-hit ones stop on contact
+      if (mv.rush) this.vx = active && (mv.multi || !this.hasHit) ? mv.rush * this.facing : this.vx * 0.7;
+      if (mv.pull && active && foe.state !== 'ko' && foe.state !== 'down' && !foe.invuln()) {
+        const d = this.x - foe.x;
+        if (Math.abs(d) < 480 && Math.abs(d) > 60 * c.size) foe.x += Math.sign(d) * 7;
+        if (this.timer % 5 === 0) game.particles.push({x: foe.x, y: foe.y - 70, vx: Math.sign(d) * 6, vy: (Math.random() - .5) * 2, life: 12, color: '#b08aff'});
+      }
+      if (mv.pull && this.timer === mv.start + mv.active - 1 && Math.abs(this.x - foe.x) < 130 * c.size && !foe.invuln()) {
+        game.spark(foe.x, foe.y - 70, '#b08aff', 20);
+        foe.takeHit(this, {dmg:Math.round(10 * c.dmg), stun:20, push:8, knock:true, ranged:true}, game, foe.hurtbox());
+      }
       if (c.special === 'electric' && active && this.timer % 6 === 0) sfx('zap');
       if (mv.multi && active && (this.timer - mv.start) % mv.multi === 0) this.hasHit = false;
     }
@@ -661,6 +797,13 @@ class Fighter {
     if (this.state === 'ko' || this.state === 'down') return;
     const dir = src.x < this.x ? 1 : -1;
     const fx = box.x + box.w / 2, fy = box.y + box.h / 2;
+    // poison ticks: unblockable chip that never interrupts
+    if (mv.poison) {
+      this.hp -= mv.dmg; this.flash = 3;
+      game.spark(this.x, this.y - 90 * this.c.size, '#b070ff', 4);
+      if (this.hp <= 0) { this.hp = 0; this.state = 'ko'; this.vx = dir * 5; this.vy = -10; this.y -= 1; game.onKO(this); }
+      return;
+    }
     // counter stance: catch any strike or throw (not projectiles/beams) and throw the attacker back
     // for double the attack's damage, stealing their POWER. Unlike the mirror it punishes, but whiffs are costly.
     const my = this.move === 'special' && this.moves.special;
@@ -683,7 +826,7 @@ class Fighter {
       if (!mv.proj && !mv.ranged) src.vx = (src.x < this.x ? -1 : 1) * 7;
       return;
     }
-    const dmg = Math.round(mv.dmg * (src.rage ? 1.5 : 1));
+    let dmg = Math.round(mv.dmg * (src.rage ? 1.5 : 1));
     if (this.canBlock(mv)) {
       this.hp = Math.max(1, this.hp - Math.ceil(dmg * 0.15));
       this.vx = dir * mv.push * 0.6; this.state = 'hit'; this.stun = Math.floor(mv.stun * 0.5); this.blockstun = true;
@@ -691,19 +834,28 @@ class Fighter {
       game.spark(fx, fy, '#8cf', 8); game.hitstop = 3; sfx('block');
       return;
     }
+    // 金剛身: half damage and no flinch from anything but throws
+    if (this.iron > 0 && !mv.grab) dmg = Math.ceil(dmg / 2);
+    const ironWall = this.iron > 0 && !mv.grab && this.hp > dmg;
     // armor: light hits deal damage but do not interrupt
-    if (this.c.armor && dmg <= this.c.armor && !mv.knock && !mv.freeze && this.onGround && this.hp > dmg) {
+    if (ironWall || (this.c.armor && dmg <= this.c.armor && !mv.knock && !mv.freeze && this.onGround && this.hp > dmg)) {
       this.hp -= dmg; this.flash = 4;
+      if (mv.drain) src.hp = Math.min(src.c.hp, src.hp + dmg);
       src.meter = Math.min(100, src.meter + dmg);
       game.spark(fx, fy, '#ccd', 10); game.hitstop = 4; sfx('armor');
       return;
     }
     this.hp -= dmg; this.flash = 6; this.blockstun = false;
     if (mv.grab) { game.popup('THROW!', this.x, this.y - 160, '#ffd040'); game.shake = 12; }
+    if (mv.drain) {
+      src.hp = Math.min(src.c.hp, src.hp + dmg);
+      game.popup('+' + dmg, src.x, src.y - 170 * src.c.size, '#ff6080'); game.spark(src.x, src.y - 80, '#c02040', 14);
+    }
     src.meter = Math.min(100, src.meter + dmg * 1.2);
     this.meter = Math.min(100, this.meter + dmg * 0.6);
     this.move = null; this.crouch = false;
-    game.spark(fx, fy, src.rage ? '#ff5030' : src.c.special === 'electric' && src.move === 'special' ? '#ffe640' : '#ffd34d', src.rage ? 24 : 16);
+    const spCol = src.move === 'special' ? {electric:'#ffe640', blaze:'#ff7020', breath:'#ff7020', drain:'#c02040'}[src.c.special] : null;
+    game.spark(fx, fy, src.rage ? '#ff5030' : spCol || '#ffd34d', src.rage ? 24 : 16);
     game.hitstop = dmg >= 9 ? 7 : 5;
     game.shake = dmg >= 9 ? 8 : 4;
     sfx(mv.grab ? 'slam' : mv.freeze ? 'freeze' : dmg >= 9 ? 'heavy' : 'hit');
@@ -755,6 +907,42 @@ class Fighter {
         ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx, hy, th * 0.9, 0, Math.PI*2); ctx.fill();
       }
     }
+    if (spActive && c.special === 'blaze') drawFlames(x, y - 85 * s, 100 * s, this.anim);
+    if (this.iron) {
+      ctx.save(); ctx.globalAlpha = 0.35 + Math.sin(this.anim * 0.3) * 0.15;
+      ctx.strokeStyle = '#ffd860'; ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.ellipse(x, y - 68 * s, 46 * s * B, 78 * s, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    }
+    if (mv === 'special' && c.special === 'breath') {
+      const hy = y - 100 * s, hx = x + f * 34 * s;
+      if (this.timer < mvd.start) {
+        ctx.fillStyle = `rgba(255,140,40,${0.2 + this.timer / mvd.start * 0.5})`;
+        ctx.beginPath(); ctx.arc(hx, hy - 20 * s, 6 + this.timer * 0.6, 0, Math.PI * 2); ctx.fill();
+      } else if (spActive) {
+        const len = mvd.len * s, tip = hx + f * len, flick = Math.sin(this.anim * 1.3) * 6;
+        const g = ctx.createLinearGradient(hx, 0, tip, 0);
+        g.addColorStop(0, '#fff6c0'); g.addColorStop(0.35, '#ffb020'); g.addColorStop(1, 'rgba(255,60,0,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.moveTo(hx, hy - 10);
+        ctx.lineTo(tip, hy - 34 - flick); ctx.lineTo(tip, hy + 34 + flick); ctx.lineTo(hx, hy + 10); ctx.closePath(); ctx.fill();
+      }
+    }
+    if (mv === 'special' && c.special === 'gravity' && this.timer >= mvd.start - 6 && this.timer < mvd.start + mvd.active) {
+      const ox = x + f * 58 * s, oy = y - 95 * s, r = 16 + Math.sin(this.anim * 0.4) * 3;
+      const g = ctx.createRadialGradient(ox, oy, 2, ox, oy, r * 2.4);
+      g.addColorStop(0, '#000'); g.addColorStop(0.4, '#5a2aa0'); g.addColorStop(1, 'rgba(150,90,255,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ox, oy, r * 2.4, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#c8a8ff'; ctx.lineWidth = 2;
+      for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(ox, oy, r + i * 9, this.anim * 0.2 + i, this.anim * 0.2 + i + 2.2); ctx.stroke(); }
+    }
+    if (mv === 'special' && c.special === 'heal' && this.timer < mvd.start) {
+      ctx.save(); ctx.globalAlpha = 0.5;
+      ctx.strokeStyle = '#8fff9f'; ctx.lineWidth = 3;
+      const k = this.timer / mvd.start;
+      ctx.beginPath(); ctx.ellipse(x, y - k * 140 * s, 40 * s, 10, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    }
     if (this.reflecting()) {
       const mx = x + f * 42 * s, my = y - 75 * s;
       ctx.save(); ctx.globalAlpha = 0.75;
@@ -778,16 +966,26 @@ class Fighter {
       drawHead(c, acc, 0, 0, this.anim, this.flash); ctx.restore();
       ctx.restore(); return;
     }
+    if (mv === 'special' && c.special === 'roll' && spActive) {   // curled up into a rolling ball
+      ctx.translate(0, -38); ctx.rotate(this.timer * 0.5);
+      ctx.fillStyle = body; ctx.beginPath(); ctx.arc(0, 0, 36, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = acc; ctx.lineWidth = 6;
+      for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(0, 0, 30, i * 2.1, i * 2.1 + 1); ctx.stroke(); }
+      ctx.fillStyle = skin; ctx.beginPath(); ctx.arc(14, -10, 10, 0, Math.PI * 2); ctx.fill();
+      ctx.restore(); return;
+    }
 
     // reach characters stretch their limbs on active frames
     const R = v => 30 + (v - 30) * c.reach;
     const bob = (st === 'idle') ? Math.sin(this.anim * 0.12) * 2 : 0;
-    const crouch = this.crouch && st !== 'jump';
+    const sliding = mv === 'special' && c.special === 'slide' && activeish;
+    const crouch = (this.crouch && st !== 'jump') || sliding;
     const air = !this.onGround && st !== 'knock' && st !== 'ko';
     const hipY = crouch ? -40 : -65;
     const shY = crouch ? -80 : -115 + bob;
     let lean = st === 'hit' || st === 'knock' || st === 'ko' ? -10 : 0;
     if (mv === 'special' && c.special === 'tackle' && activeish) lean = 14;
+    if (mv === 'special' && (c.special === 'dashpunch' || c.special === 'breath') && activeish) lean = 10;
     const walk = st === 'walk' ? Math.sin(this.anim * 0.3) * 14 : 0;
 
     const limb = (x1, y1, x2, y2, x3, y3, w, col) => {
@@ -805,6 +1003,12 @@ class Fighter {
     if (mv === 'special' && c.special === 'uppercut' && activeish) lF = [30, hipY - 30, 40, hipY - 70];
     if (mv === 'special' && c.special === 'tackle' && activeish) { lF = [25, hipY + 30, 30, 0]; lB = [-25, hipY + 30, -45, 0]; }
     if (mv === 'special' && c.special === 'dive' && this.timer >= mvd.start + mvd.hitFrom && air) { lF = [30, hipY + 20, 60, hipY + 55]; lB = [-10, hipY + 20, -5, hipY + 40]; }
+    if (sliding) { lF = [40, -14, 85, -6]; lB = [-20, -18, -45, -2]; }
+    if (mv === 'special' && c.special === 'whirl' && activeish && air) {
+      const sw = Math.sin(this.anim * 0.9) > 0 ? 1 : -1;   // legs whip round
+      lF = [35 * sw, hipY, 75 * sw, hipY - 6]; lB = [-30 * sw, hipY + 10, -60 * sw, hipY + 14];
+    }
+    if (mv === 'special' && c.special === 'stomp' && this.timer < mvd.start) lF = [30, hipY - 25, 34, -70];
     const lw = 16 * B;
     limb(-6, hipY, lB[0], lB[1], lB[2], lB[3], lw, body);
     // torso
@@ -847,9 +1051,26 @@ class Fighter {
         aF = [28, shY + 40, 48, shY + 70];
       } else if (sp === 'dive') {
         aF = [20, shY + 5, 0, shY - 25]; aB = [-10, shY + 5, -30, shY - 20];
-      } else if (sp === 'ice' || sp === 'rocket' || sp === 'beam') {
+      } else if (sp === 'ice' || sp === 'rocket' || sp === 'beam' || sp === 'boomerang' || sp === 'kunai' || sp === 'mist' || sp === 'gravity') {
         const t = this.timer < mvd.start ? [-10, shY + 20, -5, shY + 10] : [35, shY + 18, 62, shY + 18];
         aF = t; aB = [t[0] - 4, t[1] + 6, t[2] - 4, t[3] + 6];
+      } else if (sp === 'arrows') {   // drawn bow
+        aF = [34, shY + 14, 60, shY + 14]; aB = [10, shY + 16, this.timer < mvd.start ? -8 : 20, shY + 14];
+      } else if (sp === 'heal') {
+        aF = [20, shY - 2, 12, shY - 32]; aB = [12, shY - 2, 6, shY - 32];
+      } else if (sp === 'iron' || sp === 'stomp') {
+        aF = [30, shY - 5, 26, shY - 40]; aB = [-22, shY - 5, -28, shY - 40];
+        if (sp === 'stomp') { aF = [26, shY + 20, 30, shY + 50]; aB = [-18, shY + 20, -24, shY + 50]; }
+      } else if (sp === 'drain') {
+        aF = activeish ? [38, shY + 12, 64, shY + 2] : [20, shY + 10, 10, shY - 10]; aB = [-14, shY + 10, -30, shY - 6];
+      } else if (sp === 'blaze') {
+        aF = [32, shY - 5, 46, shY - 28]; aB = [-24, shY - 5, -40, shY - 28];
+      } else if (sp === 'whirl') {
+        aF = [30, shY + 4, 50, shY - 6]; aB = [-24, shY + 4, -44, shY - 6];
+      } else if (sp === 'dashpunch') {
+        aF = activeish ? [40 + lean, shY + 10, 92, shY + 8] : [20, shY + 20, 26, shY + 2];
+      } else if (sp === 'breath') {
+        aF = [-6, shY + 25, -22, shY + 40]; aB = [-14, shY + 20, -30, shY + 30];
       }
     }
     if (mv === 'riposte') { aF = [36, shY + 5, 60, shY - 20]; aB = [26, shY + 20, 50, shY + 5]; }
@@ -860,6 +1081,13 @@ class Fighter {
     ctx.fillStyle = acc; // glove
     const rocketGone = mv === 'special' && c.special === 'rocket' && this.timer >= mvd.start;
     if (!rocketGone) { ctx.beginPath(); ctx.arc(aF[2], aF[3], 9 * Math.max(1, B * 0.9), 0, Math.PI*2); ctx.fill(); }
+    if (mv === 'special' && c.special === 'arrows') {   // the bow itself
+      ctx.strokeStyle = '#8a5a2a'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(aF[2] - 10, aF[3], 32, -1.1, 1.1); ctx.stroke();
+      ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(aF[2] - 10 + 32 * Math.cos(-1.1), aF[3] + 32 * Math.sin(-1.1)); ctx.lineTo(aB[2], aB[3]);
+      ctx.lineTo(aF[2] - 10 + 32 * Math.cos(1.1), aF[3] + 32 * Math.sin(1.1)); ctx.stroke();
+    }
     if (mv === 'special' && c.special === 'counter' && this.timer < mvd.start + mvd.active) {
       ctx.strokeStyle = 'rgba(200,240,255,.6)'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(10, shY + 30, 70 + Math.sin(this.anim * 0.4) * 4, -1.2, 1.2); ctx.stroke();
@@ -873,6 +1101,16 @@ class Fighter {
 function drawHead(c, acc, hx, hy, anim, flash) {
   const tint = typeof flash === 'string' ? flash : flash ? '#fff' : null;
   const skin = tint || c.skin, hair = tint || c.hairColor;
+  // parts that sit behind the face
+  if (c.hair === 'afro') { ctx.fillStyle = hair; ctx.beginPath(); ctx.arc(hx - 4, hy - 7, 27, 0, Math.PI * 2); ctx.fill(); }
+  if (c.hair === 'hood') {
+    ctx.fillStyle = hair; ctx.beginPath(); ctx.arc(hx - 3, hy - 2, 23, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(hx - 22, hy); ctx.lineTo(hx - 30, hy + 34); ctx.lineTo(hx - 4, hy + 20); ctx.fill();
+  }
+  if (c.hair === 'dino') {
+    ctx.fillStyle = hair;
+    for (let i = 0; i < 4; i++) { const by = hy - 14 + i * 12; ctx.beginPath(); ctx.moveTo(hx - 14, by - 6); ctx.lineTo(hx - 30 - (i % 2) * 4, by); ctx.lineTo(hx - 14, by + 6); ctx.fill(); }
+  }
   if (c.hair === 'long') {
     ctx.fillStyle = hair;
     ctx.beginPath(); ctx.moveTo(hx - 16, hy - 8); ctx.lineTo(hx - 30 + Math.sin(anim * 0.1) * 3, hy + 42);
@@ -1001,8 +1239,57 @@ function drawHead(c, acc, hx, hy, anim, flash) {
       ctx.fillStyle = tint || '#8cf'; ctx.fillRect(hx + 4, hy - 3, 10, 7);
       ctx.fillStyle = tint || '#5a3a20'; ctx.fillRect(hx + 2, hy + 9, 14, 3);
       return;
+    case 'cap':
+      ctx.fillStyle = hair; ctx.beginPath(); ctx.arc(hx, hy - 4, 18, Math.PI, Math.PI * 2); ctx.fill();
+      ctx.fillRect(hx + 6, hy - 8, 22, 5);
+      ctx.fillStyle = tint || '#fff'; ctx.beginPath(); ctx.arc(hx - 2, hy - 15, 3, 0, Math.PI * 2); ctx.fill();
+      break;
+    case 'mage':   // sumo topknot
+      ctx.fillStyle = hair; ctx.beginPath(); ctx.arc(hx - 1, hy - 3, 17.5, Math.PI * 1.05, Math.PI * 1.95); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(hx - 2, hy - 22, 9, 5, 0, 0, Math.PI * 2); ctx.fill();
+      break;
+    case 'slick':   // vampire: swept-back hair with a widow's peak, fangs
+      ctx.fillStyle = hair; ctx.beginPath(); ctx.arc(hx - 1, hy - 2, 18, Math.PI * 0.95, Math.PI * 1.98); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(hx + 2, hy - 15); ctx.lineTo(hx + 8, hy - 6); ctx.lineTo(hx + 14, hy - 14); ctx.fill();
+      ctx.fillStyle = tint || '#fff';
+      ctx.beginPath(); ctx.moveTo(hx + 9, hy + 7); ctx.lineTo(hx + 11, hy + 13); ctx.lineTo(hx + 13, hy + 7); ctx.fill();
+      ctx.fillStyle = tint || '#c02040'; ctx.fillRect(hx + 6, hy - 2, 5, 4);
+      return;
+    case 'hood':
+      ctx.fillStyle = hair; ctx.beginPath(); ctx.arc(hx, hy - 3, 19, Math.PI * 1.05, Math.PI * 1.95); ctx.fill();
+      ctx.fillStyle = tint || '#0006'; ctx.fillRect(hx - 4, hy - 8, 22, 10);
+      ctx.fillStyle = tint || acc; ctx.fillRect(hx + 6, hy - 3, 6, 3);
+      return;
+    case 'afro':
+      ctx.fillStyle = hair; ctx.beginPath(); ctx.arc(hx - 2, hy - 9, 20, Math.PI * 1.0, Math.PI * 1.9); ctx.fill();
+      break;
+    case 'mohawk':
+      ctx.fillStyle = hair;
+      ctx.beginPath(); ctx.moveTo(hx - 16, hy - 6);
+      for (let i = 0; i < 5; i++) { ctx.lineTo(hx - 13 + i * 6, hy - 30 - (i % 2) * 5); ctx.lineTo(hx - 10 + i * 6, hy - 15); }
+      ctx.lineTo(hx + 12, hy - 12); ctx.closePath(); ctx.fill();
+      break;
+    case 'dino':
+      ctx.fillStyle = tint || '#fff';
+      for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.moveTo(hx + 4 + i * 4, hy + 8); ctx.lineTo(hx + 6 + i * 4, hy + 13); ctx.lineTo(hx + 8 + i * 4, hy + 8); ctx.fill(); }
+      ctx.fillStyle = tint || '#ffcc33'; ctx.fillRect(hx + 6, hy - 3, 6, 4);
+      return;
   }
   ctx.fillStyle = '#222'; ctx.fillRect(hx + 6, hy - 2, 5, 4); // eye
+}
+
+function drawFlames(cx, cy, r, anim) {
+  ctx.save();
+  const g = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r);
+  g.addColorStop(0, 'rgba(255,200,80,.4)'); g.addColorStop(1, 'rgba(255,60,0,0)');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+  for (let i = 0; i < 10; i++) {   // licking tongues of fire around the body
+    const a = (i / 10) * Math.PI * 2 + anim * 0.08, fl = 0.75 + Math.sin(anim * 0.7 + i * 1.9) * 0.2;
+    const bx = cx + Math.cos(a) * r * 0.55, by = cy + Math.sin(a) * r * 0.6;
+    ctx.fillStyle = i % 2 ? '#ff7020cc' : '#ffd040cc';
+    ctx.beginPath(); ctx.moveTo(bx - 10, by + 8); ctx.quadraticCurveTo(bx, by - 30 * fl, bx + 10, by + 8); ctx.fill();
+  }
+  ctx.restore();
 }
 
 function drawLightning(cx, cy, r) {
@@ -1022,29 +1309,36 @@ function drawLightning(cx, cy, r) {
 
 class Fireball {
   constructor(owner, x, y, p) {
-    Object.assign(this, {owner, x, y, p, vx: owner.facing * p.speed, life: 220, dead: false, t: 0, pk: CHARS.indexOf(owner.c)});
+    Object.assign(this, {owner, x, y, p, vx: owner.facing * p.speed, life: 220, dead: false, t: 0, pk: CHARS.indexOf(owner.c),
+      dir0: owner.facing, hitGo: false, hitBack: false});
   }
   box() { const s = this.p.scale; return {x:this.x - 22*s, y:this.y - 18*s, w:44*s, h:36*s}; }
   update(game) {
     this.x += this.vx; this.t++;
+    if (this.p.boomerang) {   // slows, turns around about 300px out, and is caught on the way back
+      this.vx -= this.dir0 * 0.135;
+      if (Math.sign(this.vx) !== this.dir0 && Math.abs(this.x - this.owner.x) < 30) this.dead = true;
+    }
     if (--this.life <= 0 || this.x < -60 || this.x > W + 60) this.dead = true;
     const foe = game.fighters.find(f => f !== this.owner);
     if (!this.dead && foe.reflecting()) {
       const hb = foe.hurtbox(), rb = {x:hb.x - 30, y:hb.y - 20, w:hb.w + 60, h:hb.h + 20};
       if (overlap(this.box(), rb)) {
-        this.owner = foe; this.vx = -this.vx * 1.3; this.life = 220;
+        this.owner = foe; this.vx = -this.vx * 1.3; this.life = 220; this.dir0 = Math.sign(this.vx);
         foe.meter = Math.min(100, foe.meter + 15);
         game.spark(this.x, this.y, '#fff', 16); game.popup('REFLECT!', foe.x, foe.y - 165, '#ffe080');
         sfx('reflect'); return;
       }
     }
-    if (!this.dead && !foe.invuln() && overlap(this.box(), foe.hurtbox()) && foe.state !== 'down') {
-      this.dead = true;
+    const back = this.p.boomerang && Math.sign(this.vx) !== this.dir0;
+    if (!this.dead && !foe.invuln() && !(back ? this.hitBack : this.hitGo) && overlap(this.box(), foe.hurtbox()) && foe.state !== 'down') {
+      if (back) this.hitBack = true; else this.hitGo = true;
+      if (!this.p.boomerang) this.dead = true;
       const fz = this.p.freeze;
       foe.takeHit(this.owner, {dmg:this.p.dmg, stun:fz || 22, push:fz ? 2 : 9, proj:true, freeze:fz}, game, this.box());
     }
     for (const o of game.projectiles) {
-      if (o !== this && o.owner !== this.owner && !o.dead && overlap(this.box(), o.box())) {
+      if (o !== this && o.owner !== this.owner && !o.dead && !o.isCloud && overlap(this.box(), o.box())) {
         this.dead = o.dead = true; game.spark(this.x, this.y, '#fff', 20); sfx('clash');
       }
     }
@@ -1058,6 +1352,30 @@ class Fireball {
       ctx.beginPath(); ctx.moveTo(-18, -7); ctx.lineTo(-40 - Math.random() * 14, 0); ctx.lineTo(-18, 7); ctx.fill();
       ctx.fillStyle = '#9aa4b0'; ctx.fillRect(-20, -8, 22, 16);
       ctx.fillStyle = this.owner.accent; ctx.beginPath(); ctx.arc(10, 0, 13, 0, Math.PI*2); ctx.fill();
+      ctx.restore(); return;
+    }
+    if (this.p.arrow || this.p.kunai) {
+      const d = Math.sign(this.vx) || 1;
+      ctx.save(); ctx.translate(this.x, this.y); ctx.scale(d, 1);
+      if (this.p.arrow) {
+        ctx.strokeStyle = '#8a6a3a'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(-26, 0); ctx.lineTo(14, 0); ctx.stroke();
+        ctx.fillStyle = '#ddd'; ctx.beginPath(); ctx.moveTo(22, 0); ctx.lineTo(12, -5); ctx.lineTo(12, 5); ctx.fill();
+        ctx.fillStyle = c[1]; ctx.fillRect(-28, -4, 7, 3); ctx.fillRect(-28, 1, 7, 3);
+      } else {
+        ctx.fillStyle = '#cfd6de'; ctx.beginPath(); ctx.moveTo(18, 0); ctx.lineTo(2, -5); ctx.lineTo(2, 5); ctx.fill();
+        ctx.fillStyle = '#333'; ctx.fillRect(-10, -2, 12, 4);
+        ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(-13, 0, 3, 0, Math.PI*2); ctx.stroke();
+        ctx.strokeStyle = '#ffffff55'; ctx.beginPath(); ctx.moveTo(-20, 0); ctx.lineTo(-40, 0); ctx.stroke();
+      }
+      ctx.restore(); return;
+    }
+    if (this.p.boomerang) {
+      ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.t * 0.45);
+      ctx.strokeStyle = '#c08020'; ctx.lineWidth = 8; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-16, -12); ctx.lineTo(0, 0); ctx.lineTo(16, -12); ctx.stroke();
+      ctx.strokeStyle = '#ffe9a0'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(-14, -10); ctx.lineTo(0, 0); ctx.lineTo(14, -10); ctx.stroke();
       ctx.restore(); return;
     }
     const g = ctx.createRadialGradient(this.x, this.y, 2, this.x, this.y, 30 * s);
@@ -1097,6 +1415,30 @@ class Mine {
     ctx.fillStyle = blink ? '#ff2020' : this.t <= 30 ? '#555' : '#601010';
     ctx.beginPath(); ctx.arc(this.x, this.y - 10, 4, 0, Math.PI*2); ctx.fill();
     if (blink) { ctx.fillStyle = 'rgba(255,40,40,.25)'; ctx.beginPath(); ctx.arc(this.x, this.y - 10, 12, 0, Math.PI*2); ctx.fill(); }
+  }
+}
+
+// poison mist: a lingering patch that ticks damage on the opponent standing in it
+class Cloud {
+  constructor(owner, x) { Object.assign(this, {owner, x, y:GROUND - 60, t:0, life:180, dead:false, isCloud:true}); }
+  box() { return {x:this.x - 75, y:this.y - 70, w:150, h:130}; }
+  update(game) {
+    this.t++;
+    if (--this.life <= 0) { this.dead = true; return; }
+    const foe = game.fighters.find(f => f !== this.owner);
+    if (this.t > 10 && this.t % 15 === 0 && !foe.invuln() && overlap(this.box(), foe.hurtbox()))
+      foe.takeHit(this.owner, {dmg:2, poison:true}, game, this.box());
+  }
+  draw() {
+    const a = Math.min(1, this.life / 40, this.t / 10);
+    ctx.save(); ctx.globalAlpha = 0.55 * a;
+    for (let i = 0; i < 6; i++) {
+      const ox = Math.sin(this.t * 0.05 + i * 1.7) * 45, oy = Math.cos(this.t * 0.04 + i * 2.1) * 30;
+      const g = ctx.createRadialGradient(this.x + ox, this.y + oy, 4, this.x + ox, this.y + oy, 48);
+      g.addColorStop(0, '#b070ff'); g.addColorStop(1, 'rgba(120,200,60,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(this.x + ox, this.y + oy, 48, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
   }
 }
 
@@ -1148,6 +1490,7 @@ const game = {
   syncPreviews() {
     for (const p of [1, 2]) {
       const s = this.sel[p], pv = this.previews[p];
+      if (s.i >= CHARS.length) { this.previews[p] = null; continue; }   // the random tile has no preview fighter
       const alt = p === 2 && this.sel[1].i === this.sel[2].i;
       if (!pv || pv.c !== CHARS[s.i] || pv.isAlt !== alt) {
         const f = new Fighter(p, CHARS[s.i], alt);
@@ -1159,7 +1502,7 @@ const game = {
     }
   },
   updateSelect() {
-    const N = CHARS.length;
+    const N = CHARS.length + 1;   // the last tile is ランダム
     for (const p of [1, 2]) {
       const s = this.sel[p];
       if (!s.ok) {
@@ -1170,8 +1513,12 @@ const game = {
           let r = (row + (hit1(p, 'up') ? rows - 1 : 1)) % rows;
           s.i = Math.min(N - 1, r * SEL_COLS + col); sfx('select');
         }
-        if (hit1(p, 'punch') || hit1(p, 'special')) { s.ok = true; sfx('ok'); }
-      } else if (hit1(p, 'kick')) { s.ok = false; sfx('cancel'); }
+        if (hit1(p, 'punch') || hit1(p, 'special')) {
+          s.rand = s.i === CHARS.length;
+          if (s.rand) s.i = Math.random() * CHARS.length | 0;
+          s.ok = true; sfx('ok');
+        }
+      } else if (hit1(p, 'kick')) { s.ok = false; if (s.rand) s.i = CHARS.length; s.rand = false; sfx('cancel'); }
     }
     this.syncPreviews();
     if (pressed['Escape']) leaveToMenu();
@@ -1367,7 +1714,7 @@ function drawTitle() {
   ctx.fillText('しゃがみ＋キック＝足払い ／ 必殺技はPOWERゲージを消費', W/2, 232);
 }
 
-const SEL_COLS = 8;
+const SEL_COLS = 11;
 const STAT_MAX = {hp:[80, 135], power:[0.8, 1.3], speed:[2.8, 5.8], reach:[0.95, 1.9]};
 function statLevel(c, k) {
   const v = {hp:c.hp, power:c.dmg, speed:c.walk, reach:c.reach}[k], [lo, hi] = STAT_MAX[k];
@@ -1377,85 +1724,102 @@ function statLevel(c, k) {
 function drawSelect(g) {
   ctx.fillStyle = 'rgba(10,6,24,.72)'; ctx.fillRect(0, 0, W, H);
   ctx.textAlign = 'center';
-  ctx.font = 'bold 40px Anton, Impact, sans-serif'; ctx.lineWidth = 6; ctx.strokeStyle = '#000';
-  ctx.strokeText('SELECT YOUR FIGHTER', W/2, 50); ctx.fillStyle = '#ffd23f'; ctx.fillText('SELECT YOUR FIGHTER', W/2, 50);
+  ctx.font = 'bold 34px Anton, Impact, sans-serif'; ctx.lineWidth = 6; ctx.strokeStyle = '#000';
+  ctx.strokeText('SELECT YOUR FIGHTER', W/2, 44); ctx.fillStyle = '#ffd23f'; ctx.fillText('SELECT YOUR FIGHTER', W/2, 44);
+  const RAND = CHARS.length;
 
-  // previews
+  // previews (a big "?" while the cursor is on ランダム)
   for (const p of [1, 2]) {
     const pv = g.previews[p];
-    if (!pv) continue;
+    if (!pv) {
+      const px = p === 1 ? 110 : W - 110;
+      ctx.textAlign = 'center'; ctx.font = '150px Anton, Impact, sans-serif'; ctx.lineWidth = 8; ctx.strokeStyle = '#000';
+      ctx.strokeText('?', px, 270); ctx.fillStyle = p === 1 ? '#6cf' : '#f66'; ctx.fillText('?', px, 270);
+      continue;
+    }
     ctx.save(); ctx.translate(pv.x, pv.y); ctx.scale(1.25, 1.25); ctx.translate(-pv.x, -pv.y);
     pv.draw(); ctx.restore();
   }
 
   // info panels
   for (const p of [1, 2]) {
-    const c = CHARS[g.sel[p].i], x = p === 1 ? 210 : 490, y = 78, col = p === 1 ? '#6cf' : '#f66';
-    ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x, y, 260, 222);
-    ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.strokeRect(x, y, 260, 222);
+    const s = g.sel[p], x = p === 1 ? 210 : 490, y = 62, ph = 214, col = p === 1 ? '#6cf' : '#f66';
+    const c = s.i >= RAND ? null : CHARS[s.i];
+    ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(x, y, 260, ph);
+    ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.strokeRect(x, y, 260, ph);
     ctx.textAlign = 'left';
-    ctx.font = 'bold 30px Anton, Impact, sans-serif'; ctx.fillStyle = col; ctx.fillText(c.name, x + 12, y + 36);
+    ctx.font = 'bold 28px Anton, Impact, sans-serif'; ctx.fillStyle = col; ctx.fillText(c ? c.name : 'RANDOM', x + 12, y + 32);
     ctx.font = 'bold 15px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#fff';
-    ctx.fillText(`${c.jp} ／ ${c.type}タイプ`, x + 12, y + 58);
+    ctx.fillText(c ? `${c.jp} ／ ${c.type}タイプ` : 'ランダム', x + 12, y + 53);
     ctx.font = '13px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#ddd';
-    c.desc.forEach((l, i) => ctx.fillText(l, x + 12, y + 80 + i * 18));
-    ctx.fillStyle = '#ffd23f'; ctx.fillText(`必殺技: ${c.spName}（POWER ${c.cost}）`, x + 12, y + 122);
+    const desc = c ? c.desc : [`決定すると${CHARS.length}人の中から`, 'だれか1人が選ばれる。'];
+    desc.forEach((l, i) => ctx.fillText(l, x + 12, y + 73 + i * 17));
+    ctx.fillStyle = '#ffd23f';
+    ctx.fillText(c ? `必殺技: ${c.spName}（POWER ${c.cost}）` : '必殺技: ？？？', x + 12, y + 111);
     [['体力','hp'],['攻撃力','power'],['スピード','speed'],['リーチ','reach']].forEach(([label, k], i) => {
-      const yy = y + 142 + i * 19;
+      const yy = y + 124 + i * 18;
       ctx.fillStyle = '#ccc'; ctx.fillText(label, x + 12, yy + 10);
       for (let j = 0; j < 5; j++) {
-        ctx.fillStyle = j < statLevel(c, k) ? col : '#333';
-        ctx.fillRect(x + 90 + j * 30, yy, 26, 11);
+        ctx.fillStyle = c && j < statLevel(c, k) ? col : '#333';
+        ctx.fillRect(x + 90 + j * 30, yy, 26, 10);
       }
     });
-    if (g.sel[p].ok) {
-      ctx.textAlign = 'center'; ctx.font = 'bold 36px Anton, Impact, sans-serif';
-      ctx.save(); ctx.translate(x + 130, y + 120); ctx.rotate(-0.15);
-      ctx.strokeStyle = '#000'; ctx.lineWidth = 6; ctx.strokeText('READY!', 0, 0);
-      ctx.fillStyle = col; ctx.fillText('READY!', 0, 0); ctx.restore();
+    if (s.ok) {
+      ctx.textAlign = 'center'; ctx.font = 'bold 34px Anton, Impact, sans-serif';
+      ctx.save(); ctx.translate(x + 130, y + 112); ctx.rotate(-0.15);
+      const label = s.rand ? 'RANDOM!' : 'READY!';
+      ctx.strokeStyle = '#000'; ctx.lineWidth = 6; ctx.strokeText(label, 0, 0);
+      ctx.fillStyle = col; ctx.fillText(label, 0, 0); ctx.restore();
     }
   }
 
-  // roster cards
-  const N = CHARS.length, cw = 80, ch = 82, gap = 8;
+  // roster cards: every fighter, then the ランダム tile
+  const cw = 78, ch = 62, gap = 6;
   const x0 = W/2 - (SEL_COLS * cw + (SEL_COLS - 1) * gap) / 2;
-  CHARS.forEach((c, i) => {
-    const x = x0 + (i % SEL_COLS) * (cw + gap), cy = 312 + Math.floor(i / SEL_COLS) * (ch + 8);
+  for (let i = 0; i <= RAND; i++) {
+    const c = CHARS[i];
+    const x = x0 + (i % SEL_COLS) * (cw + gap), cy = 288 + Math.floor(i / SEL_COLS) * (ch + gap);
     ctx.fillStyle = '#1c1830'; ctx.fillRect(x, cy, cw, ch);
-    const bg = ctx.createLinearGradient(0, cy, 0, cy + ch); bg.addColorStop(0, c.body + '66'); bg.addColorStop(1, '#0000');
-    ctx.fillStyle = bg; ctx.fillRect(x, cy, cw, ch);
-    ctx.save();
-    ctx.beginPath(); ctx.rect(x, cy, cw, ch); ctx.clip();
-    ctx.translate(x + cw/2, cy + 44); ctx.scale(1.15, 1.15);
-    ctx.fillStyle = c.body; ctx.fillRect(-20, 16, 40, 20);
-    drawHead(c, c.accent, 0, 0, performance.now() / 16, 0);
-    ctx.restore();
-    ctx.fillStyle = 'rgba(0,0,0,.7)'; ctx.fillRect(x, cy + ch - 20, cw, 20);
-    ctx.textAlign = 'center'; ctx.font = 'bold 14px Anton, Impact, sans-serif'; ctx.fillStyle = '#fff';
-    ctx.fillText(c.name, x + cw/2, cy + ch - 5);
-    ctx.font = '10px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#ddd';
-    ctx.fillText(c.type, x + cw/2, cy + 11);
-    for (const p of [1, 2]) {
-      if (g.sel[p].i !== i) continue;
-      const blink = g.sel[p].ok || Math.floor(performance.now() / 250) % 2;
-      ctx.strokeStyle = p === 1 ? '#3af' : '#f44'; ctx.lineWidth = blink ? 5 : 3;
-      const o = p === 1 ? 0 : 6;
-      ctx.strokeRect(x - 3 + o, cy - 3 + o, cw + 6 - o * 2, ch + 6 - o * 2);
-      ctx.font = 'bold 15px Anton, Impact, sans-serif'; ctx.lineWidth = 3; ctx.strokeStyle = '#000';
-      ctx.strokeText(`${p}P`, x + (p === 1 ? 14 : cw - 14), cy + 26);
-      ctx.fillStyle = p === 1 ? '#3af' : '#f44';
-      ctx.fillText(`${p}P`, x + (p === 1 ? 14 : cw - 14), cy + 26);
+    if (c) {
+      const bg = ctx.createLinearGradient(0, cy, 0, cy + ch); bg.addColorStop(0, c.body + '66'); bg.addColorStop(1, '#0000');
+      ctx.fillStyle = bg; ctx.fillRect(x, cy, cw, ch);
+      ctx.save();
+      ctx.beginPath(); ctx.rect(x, cy, cw, ch); ctx.clip();
+      ctx.translate(x + cw/2, cy + 30); ctx.scale(0.95, 0.95);
+      ctx.fillStyle = c.body; ctx.fillRect(-20, 16, 40, 20);
+      drawHead(c, c.accent, 0, 0, performance.now() / 16, 0);
+      ctx.restore();
+    } else {
+      const bg = ctx.createLinearGradient(x, cy, x + cw, cy + ch); bg.addColorStop(0, '#3a2a6a'); bg.addColorStop(1, '#6a2a3a');
+      ctx.fillStyle = bg; ctx.fillRect(x, cy, cw, ch);
+      ctx.textAlign = 'center'; ctx.font = '38px Anton, Impact, sans-serif'; ctx.fillStyle = '#ffd23f';
+      ctx.fillText('?', x + cw/2, cy + 42);
     }
-  });
+    ctx.fillStyle = 'rgba(0,0,0,.7)'; ctx.fillRect(x, cy + ch - 16, cw, 16);
+    ctx.textAlign = 'center'; ctx.font = '12px Anton, Impact, sans-serif'; ctx.fillStyle = '#fff';
+    ctx.fillText(c ? c.name : 'RANDOM', x + cw/2, cy + ch - 4);
+    for (const p of [1, 2]) {
+      const si = g.sel[p].rand && !g.sel[p].ok ? RAND : g.sel[p].i;
+      if (si !== i) continue;
+      const blink = g.sel[p].ok || Math.floor(performance.now() / 250) % 2;
+      ctx.strokeStyle = p === 1 ? '#3af' : '#f44'; ctx.lineWidth = blink ? 4 : 2;
+      const o = p === 1 ? 0 : 5;
+      ctx.strokeRect(x - 2 + o, cy - 2 + o, cw + 4 - o * 2, ch + 4 - o * 2);
+      ctx.font = '12px Anton, Impact, sans-serif'; ctx.lineWidth = 3; ctx.strokeStyle = '#000';
+      ctx.strokeText(`${p}P`, x + (p === 1 ? 12 : cw - 12), cy + 15);
+      ctx.fillStyle = p === 1 ? '#3af' : '#f44';
+      ctx.fillText(`${p}P`, x + (p === 1 ? 12 : cw - 12), cy + 15);
+    }
+  }
 
-  ctx.textAlign = 'center'; ctx.font = '15px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#ddd';
+  ctx.textAlign = 'center'; ctx.font = '14px "M PLUS 1p", "Yu Gothic UI", sans-serif'; ctx.fillStyle = '#ddd';
   if (mode === 'local') {
-    ctx.fillText('1P: WASD で選択・F で決定・G で取消　　2P: 矢印キーで選択・K で決定・L で取消', W/2, 500);
+    ctx.fillText('1P: WASD で選択・F で決定・G で取消　　2P: 矢印キーで選択・K で決定・L で取消', W/2, 508);
   } else {
-    ctx.fillText('移動で選択 ・ パンチ(P)で決定 ・ キック(K)で取消', W/2, 500);
+    ctx.fillText('移動で選択 ・ パンチ(P)で決定 ・ キック(K)で取消 ・ 「?」でランダム', W/2, 508);
   }
   ctx.fillText(mode === 'guest' || mode === 'spectate' ? '同じキャラを選ぶと 2P は色違いになります'
-    : '同じキャラを選ぶと 2P は色違いになります　／　Esc: メニューへ', W/2, 522);
+    : '同じキャラを選ぶと 2P は色違いになります　／　Esc: メニューへ', W/2, 528);
 }
 
 // ---------- modes ----------
@@ -1505,7 +1869,7 @@ const cpu = {
     if (this.holdT > 0) { this.holdT--; Object.assign(o.held, this.hold); return o; }
     this.hold = {}; this.holdT = 6 + (Math.random() * 8 | 0);
     const r = Math.random();
-    const incoming = game.projectiles.some(p => p.owner === foe && !p.isMine && Math.abs(p.x - me.x) < 260 && Math.sign(p.vx) === Math.sign(me.x - p.x));
+    const incoming = game.projectiles.some(p => p.owner === foe && !p.isMine && !p.isCloud &&Math.abs(p.x - me.x) < 260 && Math.sign(p.vx) === Math.sign(me.x - p.x));
     const foeAttacking = foe.state === 'attack' && dist < 170;
     const canSp = me.meter >= me.c.cost;
     if ((incoming || foeAttacking) && r < 0.55) {
@@ -1690,12 +2054,14 @@ function snapshot() {
   const g = game;
   const s = {
     ph: PHASES.indexOf(g.phase), t: g.timer, r: g.round, bt: g.bannerT, bn: g.banner, sh: r1(g.shake),
-    sel: [g.sel[1].i, g.sel[1].ok ? 1 : 0, g.sel[2].i, g.sel[2].ok ? 1 : 0],
+    sel: [g.sel[1].i, g.sel[1].ok ? 1 : 0, g.sel[2].i, g.sel[2].ok ? 1 : 0, g.sel[1].rand ? 1 : 0, g.sel[2].rand ? 1 : 0],
     lw: g.lastWinner ? g.lastWinner.id : 0, ch: g.champ ? g.champ.id : 0,
     f: g.fighters.map(f => [CHARS.indexOf(f.c), f.isAlt ? 1 : 0, r1(f.x), r1(f.y), f.facing, ST.indexOf(f.state),
       MV.indexOf(f.move), f.timer, r1(f.hp), Math.round(f.meter), f.crouch ? 1 : 0, f.blocking ? 1 : 0,
-      f.flash, f.frozen, f.rage, f.anim, f.wins]),
+      f.flash, f.frozen, f.rage, f.anim, f.wins, f.iron]),
+    // [kind, x, y, vx, owner, t, extra]  kind 0 = shot (extra: whose shot it is), 1 = mine, 2 = poison mist (extra: life)
     pr: g.projectiles.map(p => p.isMine ? [1, r1(p.x), r1(p.y), 0, p.owner.id, p.t, 0]
+      : p.isCloud ? [2, r1(p.x), r1(p.y), 0, p.owner.id, p.t, p.life]
       : [0, r1(p.x), r1(p.y), r1(p.vx), p.owner.id, p.t, p.pk]),
     ev: net.events,
   };
@@ -1790,11 +2156,12 @@ function applySnapshot(s) {
   g.phase = PHASES[s.ph] || 'title';
   g.timer = s.t; g.round = s.r; g.bannerT = s.bt; g.banner = s.bn; g.shake = s.sh; g.paused = false;
   g.sel[1].i = s.sel[0]; g.sel[1].ok = !!s.sel[1]; g.sel[2].i = s.sel[2]; g.sel[2].ok = !!s.sel[3];
+  g.sel[1].rand = !!s.sel[4]; g.sel[2].rand = !!s.sel[5];
   s.f.forEach((d, k) => {
     let f = g.fighters[k];
     if (!f || f.c !== CHARS[d[0]] || f.isAlt !== !!d[1]) { f = g.fighters[k] = new Fighter(k + 1, CHARS[d[0]], !!d[1]); f.dispHp = d[8]; }
     Object.assign(f, {x: d[2], y: d[3], facing: d[4], state: ST[d[5]], move: MV[d[6]], timer: d[7], hp: d[8], meter: d[9],
-      crouch: !!d[10], blocking: !!d[11], flash: d[12], frozen: d[13], rage: d[14], anim: d[15], wins: d[16]});
+      crouch: !!d[10], blocking: !!d[11], flash: d[12], frozen: d[13], rage: d[14], anim: d[15], wins: d[16], iron: d[17] || 0});
   });
   if (s.f.length === 0) g.fighters = [];
   g.lastWinner = g.fighters[s.lw - 1] || null;
@@ -1803,6 +2170,7 @@ function applySnapshot(s) {
     const owner = g.fighters[d[4] - 1];
     if (!owner) return null;
     if (d[0] === 1) return Object.assign(Object.create(Mine.prototype), {x: d[1], y: d[2], t: d[5], owner, isMine: true});
+    if (d[0] === 2) return Object.assign(Object.create(Cloud.prototype), {x: d[1], y: d[2], t: d[5], life: d[6], owner, isCloud: true});
     return Object.assign(Object.create(Fireball.prototype),
       {x: d[1], y: d[2], vx: d[3], t: d[5], owner, p: SPECIALS[CHARS[d[6]].special].proj});
   }).filter(Boolean);
